@@ -20,6 +20,17 @@ export const protect = async (req, res, next) => {
   }
 };
 
+export const restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(403, "You are not allowed to perform this action"),
+      );
+    }
+    next();
+  };
+
 export const requireApprovedAccount = () => (req, res, next) => {
   if (req.user.status !== "approved") {
     return next(new AppError(403, "Account not approved"));
