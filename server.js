@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import notFound from "./middleware/notFound.js";
+import { handleMulterError } from "./middleware/multer.middleware.js";
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(
     credentials: true,
     origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -43,6 +44,8 @@ app.use("/api/v1", router);
 app.get("/", (req, res) => {
   res.send("Server is running...!!");
 });
+
+app.use(handleMulterError);
 
 app.use(globalErrorHandler);
 app.use(notFound);
