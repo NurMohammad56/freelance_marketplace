@@ -46,7 +46,7 @@ router.use("/support", supportRoutes);
 router.use("/website", webRoutes);
 
 // 404 handler for undefined routes
-router.all("*", (req, res) => {
+router.all("/", (req, res) => {
   res.status(404).json({
     success: false,
     message: `Cannot ${req.method} ${req.originalUrl}`,

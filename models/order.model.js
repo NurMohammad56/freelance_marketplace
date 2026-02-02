@@ -6,21 +6,18 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      index: true,
     },
 
     client: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
 
     creative: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
 
     gig: {
@@ -131,7 +128,6 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "paid", "released", "refunded"],
       default: "pending",
-      index: true,
     },
 
     paymentIntentId: {

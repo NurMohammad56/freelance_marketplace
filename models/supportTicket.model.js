@@ -138,7 +138,6 @@ const supportTicketSchema = new mongoose.Schema(
 supportTicketSchema.index({ user: 1, status: 1 });
 supportTicketSchema.index({ status: 1, priority: -1, createdAt: -1 });
 supportTicketSchema.index({ assignedTo: 1, status: 1 });
-supportTicketSchema.index({ category: 1 });
 
 export const SupportTicket = mongoose.model(
   "SupportTicket",

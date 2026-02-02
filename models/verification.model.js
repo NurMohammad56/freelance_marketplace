@@ -114,6 +114,5 @@ const verificationSchema = new mongoose.Schema(
 // Indexes
 verificationSchema.index({ creative: 1, status: 1 });
 verificationSchema.index({ status: 1, createdAt: -1 });
-verificationSchema.index({ paymentStatus: 1 });
 
 export const Verification = mongoose.model("Verification", verificationSchema);

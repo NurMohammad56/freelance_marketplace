@@ -6,13 +6,11 @@ const jobPostSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
 
     title: {
       type: String,
       required: true,
-      trim: true,
     },
 
     description: {
@@ -23,7 +21,6 @@ const jobPostSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      index: true,
     },
 
     subCategory: {

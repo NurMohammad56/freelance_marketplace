@@ -408,19 +408,3 @@ export const rateTicket = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-
-// Export all functions
-export {
-  // Category
-  getAllCategories,
-  getCategoryById,
-  // Verification
-  requestVerification,
-  getVerificationStatus,
-  // Support
-  createSupportTicket,
-  getMyTickets,
-  getTicketById,
-  updateTicketStatus,
-  rateTicket,
-};

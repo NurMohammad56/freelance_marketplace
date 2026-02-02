@@ -23,7 +23,6 @@ const gigSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      index: true,
     },
 
     subCategory: {

@@ -97,7 +97,6 @@ const portfolioSchema = new mongoose.Schema(
 
 // Indexes
 portfolioSchema.index({ creative: 1, isDeleted: false });
-portfolioSchema.index({ category: 1 });
 portfolioSchema.index({ isFeatured: -1, createdAt: -1 });
 portfolioSchema.index({ title: "text", description: "text", tags: "text" });
 

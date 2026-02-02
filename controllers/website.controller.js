@@ -1,5 +1,5 @@
 import AppError from "../errors/AppError.js";
-import { Website } from "../model/website.model.js";
+import { Website } from "../models/website.model.js";
 import { uploadOnCloudinary } from "../utils/commonMethod.js";
 import catchAsync from "../utils/catchAsync.js";
 import sendResponse from "../utils/sendResponse.js";
@@ -25,8 +25,7 @@ const saveMultipleImages = async (files = []) => {
   return images;
 };
 
-const hasHero = (hero) =>
-  !!(hero?.title || hero?.bodyText || hero?.image?.url);
+const hasHero = (hero) => !!(hero?.title || hero?.bodyText || hero?.image?.url);
 const hasAbout = (about) =>
   !!(about?.title || about?.bodyText || about?.image?.url);
 const hasCreative = (creative) =>
@@ -50,7 +49,7 @@ export const createHeroSection = catchAsync(async (req, res, next) => {
   const website = await ensureWebsite();
   if (hasHero(website.hero)) {
     return next(
-      new AppError(400, "Hero section already exists, use update instead")
+      new AppError(400, "Hero section already exists, use update instead"),
     );
   }
 
@@ -113,7 +112,7 @@ export const createAboutSection = catchAsync(async (req, res, next) => {
   const website = await ensureWebsite();
   if (hasAbout(website.about)) {
     return next(
-      new AppError(400, "About section already exists, use update instead")
+      new AppError(400, "About section already exists, use update instead"),
     );
   }
 
@@ -175,7 +174,7 @@ export const createCreativeSection = catchAsync(async (req, res, next) => {
   const website = await ensureWebsite();
   if (hasCreative(website.creative)) {
     return next(
-      new AppError(400, "Creative section already exists, use update instead")
+      new AppError(400, "Creative section already exists, use update instead"),
     );
   }
 
@@ -242,7 +241,7 @@ export const createClientSection = catchAsync(async (req, res, next) => {
   const website = await ensureWebsite();
   if (hasClient(website.client)) {
     return next(
-      new AppError(400, "Client section already exists, use update instead")
+      new AppError(400, "Client section already exists, use update instead"),
     );
   }
 
@@ -299,14 +298,14 @@ export const createContactSection = catchAsync(async (req, res, next) => {
   const { address, phoneNumber, email } = req.body;
   if (!address || !phoneNumber || !email) {
     return next(
-      new AppError(400, "Address, phone number, and email are required")
+      new AppError(400, "Address, phone number, and email are required"),
     );
   }
 
   const website = await ensureWebsite();
   if (hasContact(website.contact)) {
     return next(
-      new AppError(400, "Contact section already exists, use update instead")
+      new AppError(400, "Contact section already exists, use update instead"),
     );
   }
 
