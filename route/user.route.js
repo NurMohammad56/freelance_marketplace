@@ -18,8 +18,8 @@ import upload from "../middleware/multer.middleware.js";
 const router = express.Router();
 
 // Public routes
-router.get("/search", searchUsers);
-router.get("/nearby", getNearbyUsers);
+router.get("/search", protect, searchUsers);
+router.get("/nearby", protect, getNearbyUsers);
 router.get("/:userId", getUserById);
 
 // Protected routes
@@ -31,11 +31,11 @@ router.put("/profile", upload.single("avatar"), updateProfile);
 // Works (Creative only)
 router.post(
   "/works",
-  restrictTo("creative"),
+  restrictTo("client"),
   upload.array("workImages", 5),
   addWork,
 );
-router.delete("/works/:workId", restrictTo("creative"), deleteWork);
+router.delete("/works/:workId", restrictTo("client"), deleteWork);
 
 // Projects (Client only)
 router.post(

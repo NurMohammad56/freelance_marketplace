@@ -13,16 +13,7 @@ import catchAsync from "../utils/catchAsync.js";
 // @access  Private (Creative)
 export const createPortfolio = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
-  const {
-    title,
-    description,
-    category,
-    tags,
-    projectUrl,
-    completionDate,
-    client,
-    isFeatured,
-  } = req.body;
+  const { description, tags, isFeatured } = req.body;
 
   if (req.user.role !== "creative") {
     return next(
@@ -33,7 +24,7 @@ export const createPortfolio = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (!req.files || (!req.files.images && !req.files.videos)) {
+  if (!req.files || !req.files.images) {
     return next(
       new AppError(
         httpStatus.BAD_REQUEST,
@@ -54,30 +45,12 @@ export const createPortfolio = catchAsync(async (req, res, next) => {
     }
   }
 
-  // Upload videos
-  const videos = [];
-  if (req.files.videos) {
-    for (const file of req.files.videos) {
-      const upload = await uploadOnCloudinary(file.buffer);
-      videos.push({
-        public_id: upload.public_id,
-        url: upload.secure_url,
-      });
-    }
-  }
-
   const portfolio = await Portfolio.create({
     creative: userId,
-    title,
     description,
-    category,
     tags: tags ? (Array.isArray(tags) ? tags : [tags]) : [],
-    projectUrl,
-    completionDate,
-    client,
     isFeatured: isFeatured === "true",
     images,
-    videos,
   });
 
   sendResponse(res, {
@@ -161,16 +134,7 @@ export const getPortfolioById = catchAsync(async (req, res, next) => {
 export const updatePortfolio = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
   const { portfolioId } = req.params;
-  const {
-    title,
-    description,
-    category,
-    tags,
-    projectUrl,
-    completionDate,
-    client,
-    isFeatured,
-  } = req.body;
+  const { description, tags, isFeatured } = req.body;
 
   const portfolio = await Portfolio.findById(portfolioId);
 
@@ -188,14 +152,34 @@ export const updatePortfolio = catchAsync(async (req, res, next) => {
   }
 
   // Update fields
-  if (title) portfolio.title = title;
   if (description) portfolio.description = description;
-  if (category) portfolio.category = category;
   if (tags) portfolio.tags = Array.isArray(tags) ? tags : [tags];
-  if (projectUrl) portfolio.projectUrl = projectUrl;
-  if (completionDate) portfolio.completionDate = completionDate;
-  if (client) portfolio.client = client;
   if (isFeatured !== undefined) portfolio.isFeatured = isFeatured === "true";
+
+  const images = [];
+
+  if (req.files?.images) {
+    for (const image of portfolio.images) {
+      const resourceType =
+        image.resource_type ||
+        (image.url?.includes("/video/") ? "video" : "image");
+
+      await deleteFromCloudinary(image.public_id, resourceType);
+    }
+
+    const uploads = await Promise.all(
+      req.files.images.map((file) => uploadOnCloudinary(file.buffer)),
+    );
+
+    for (const upload of uploads) {
+      images.push({
+        public_id: upload.public_id,
+        url: upload.secure_url,
+      });
+    }
+
+    portfolio.images = images;
+  }
 
   await portfolio.save();
 
@@ -231,11 +215,10 @@ export const deletePortfolio = catchAsync(async (req, res, next) => {
 
   // Delete media from cloudinary
   for (const image of portfolio.images) {
-    await deleteFromCloudinary(image.public_id);
-  }
-
-  for (const video of portfolio.videos) {
-    await deleteFromCloudinary(video.public_id);
+    const resourceType =
+      image.resource_type ||
+      (image.url?.includes("/video/") ? "video" : "image");
+    await deleteFromCloudinary(image.public_id, resourceType);
   }
 
   portfolio.isDeleted = true;

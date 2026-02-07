@@ -20,7 +20,6 @@ export const createJobPost = catchAsync(async (req, res, next) => {
     title,
     description,
     category,
-    subCategory,
     minBudget,
     maxBudget,
     duration,
@@ -52,7 +51,6 @@ export const createJobPost = catchAsync(async (req, res, next) => {
     title,
     description,
     category,
-    subCategory,
     budget: {
       min: minBudget,
       max: maxBudget,
@@ -148,7 +146,6 @@ export const getAllJobPosts = catchAsync(async (req, res, next) => {
     page = 1,
     limit = 20,
     category,
-    subCategory,
     minBudget,
     maxBudget,
     duration,
@@ -164,7 +161,6 @@ export const getAllJobPosts = catchAsync(async (req, res, next) => {
 
   if (status) query.status = status;
   if (category) query.category = category;
-  if (subCategory) query.subCategory = subCategory;
   if (duration) query.duration = duration;
 
   if (minBudget || maxBudget) {
@@ -282,7 +278,6 @@ export const updateJobPost = catchAsync(async (req, res, next) => {
     title,
     description,
     category,
-    subCategory,
     minBudget,
     maxBudget,
     duration,
@@ -317,7 +312,6 @@ export const updateJobPost = catchAsync(async (req, res, next) => {
   if (title) jobPost.title = title;
   if (description) jobPost.description = description;
   if (category) jobPost.category = category;
-  if (subCategory) jobPost.subCategory = subCategory;
   if (duration) jobPost.duration = duration;
   if (skillsRequired)
     jobPost.skillsRequired = Array.isArray(skillsRequired)

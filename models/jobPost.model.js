@@ -23,11 +23,6 @@ const jobPostSchema = new mongoose.Schema(
       required: true,
     },
 
-    subCategory: {
-      type: String,
-      default: "",
-    },
-
     budget: {
       min: {
         type: Number,

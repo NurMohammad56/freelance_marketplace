@@ -21,14 +21,15 @@ router.use(restrictTo("creative"));
 
 router.post(
   "/",
-  upload.fields([
-    { name: "images", maxCount: 10 },
-    { name: "videos", maxCount: 5 },
-  ]),
+  upload.fields([{ name: "images", maxCount: 10 }]),
   createPortfolio,
 );
 
-router.put("/:portfolioId", updatePortfolio);
+router.put(
+  "/:portfolioId",
+  upload.fields([{ name: "images", maxCount: 10 }]),
+  updatePortfolio,
+);
 router.delete("/:portfolioId", deletePortfolio);
 
 export default router;

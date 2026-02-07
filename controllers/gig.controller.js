@@ -18,7 +18,6 @@ export const createGig = catchAsync(async (req, res, next) => {
     title,
     about,
     category,
-    subCategory,
     paymentPerHour,
     deliveryTime,
     revisions,
@@ -66,7 +65,6 @@ export const createGig = catchAsync(async (req, res, next) => {
     title,
     about,
     category,
-    subCategory,
     paymentPerHour,
     deliveryTime: deliveryTime || 1,
     revisions: revisions || 1,
@@ -97,7 +95,6 @@ export const getAllGigs = catchAsync(async (req, res, next) => {
     page = 1,
     limit = 20,
     category,
-    subCategory,
     minPrice,
     maxPrice,
     search,
@@ -111,7 +108,6 @@ export const getAllGigs = catchAsync(async (req, res, next) => {
   };
 
   if (category) query.category = category;
-  if (subCategory) query.subCategory = subCategory;
 
   if (minPrice || maxPrice) {
     query.paymentPerHour = {};
@@ -267,7 +263,6 @@ export const updateGig = catchAsync(async (req, res, next) => {
     title,
     about,
     category,
-    subCategory,
     paymentPerHour,
     deliveryTime,
     revisions,
@@ -291,7 +286,6 @@ export const updateGig = catchAsync(async (req, res, next) => {
   if (title) gig.title = title;
   if (about) gig.about = about;
   if (category) gig.category = category;
-  if (subCategory) gig.subCategory = subCategory;
   if (paymentPerHour) gig.paymentPerHour = paymentPerHour;
   if (deliveryTime) gig.deliveryTime = deliveryTime;
   if (revisions !== undefined) gig.revisions = revisions;
@@ -303,7 +297,11 @@ export const updateGig = catchAsync(async (req, res, next) => {
   if (req.files?.images) {
     // Delete old images
     for (const image of gig.images) {
-      await deleteFromCloudinary(image.public_id);
+      const resourceType =
+        image.resource_type ||
+        (image.url?.includes("/video/") ? "video" : "image");
+
+      await deleteFromCloudinary(image.public_id, resourceType);
     }
 
     // Upload new images
@@ -322,7 +320,10 @@ export const updateGig = catchAsync(async (req, res, next) => {
   if (req.files?.reels) {
     // Delete old reels
     for (const reel of gig.reels) {
-      await deleteFromCloudinary(reel.public_id);
+      const resourceType =
+        reel.resource_type ||
+        (reel.url?.includes("/video/") ? "video" : "image");
+      await deleteFromCloudinary(reel.public_id, resourceType);
     }
 
     // Upload new reels

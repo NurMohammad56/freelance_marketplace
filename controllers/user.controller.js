@@ -50,50 +50,71 @@ export const getUserById = catchAsync(async (req, res, next) => {
 
 export const updateProfile = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
-  const { name, phone, address, bio, interests, lng, lat } = req.body;
+  const { name, phone, address, bio, interests, lng, lat, specialRole } =
+    req.body;
 
   const user = await User.findById(userId);
   if (!user) {
     return next(new AppError(httpStatus.NOT_FOUND, "User not found"));
   }
 
-  // Update basic fields
   if (name) user.name = name;
   if (phone) user.phone = phone;
   if (address) user.address = address;
   if (bio) user.bio = bio;
-  if (interests)
-    user.interests = Array.isArray(interests) ? interests : [interests];
 
-  // Update location if provided
-  if (lng && lat) {
+  if (interests) {
+    user.interests = [
+      ...new Set(
+        (Array.isArray(interests) ? interests : [interests]).map((i) =>
+          i.trim(),
+        ),
+      ),
+    ];
+  }
+
+  if (lng !== undefined && lat !== undefined) {
     user.locationGeo = {
       type: "Point",
       coordinates: [Number(lng), Number(lat)],
     };
   }
 
-  // Update profile image if provided
-  if (req.file) {
-    // Delete old image if exists
+  if (req.file?.buffer) {
     if (user.profileImage?.public_id) {
-      await deleteFromCloudinary(user.profileImage.public_id);
+      const resourceType =
+        user.profileImage.resource_type ||
+        (user.profileImage.url.includes("/video/") ? "video" : "image");
+
+      await deleteFromCloudinary(user.profileImage.public_id, resourceType);
     }
 
     const upload = await uploadOnCloudinary(req.file.buffer);
+
     user.profileImage = {
       public_id: upload.public_id,
       url: upload.secure_url,
+      resource_type: upload.resource_type,
     };
   }
 
+  if (req.user.role === "creative") {
+    if (specialRole) {
+      user.specialRole = specialRole;
+    }
+  }
+
   await user.save();
+
+  const sanitizedUser = await User.findById(userId).select(
+    "-password -refreshToken",
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Profile updated successfully",
-    data: user,
+    data: sanitizedUser,
   });
 });
 
@@ -106,9 +127,9 @@ export const addWork = catchAsync(async (req, res, next) => {
     return next(new AppError(httpStatus.NOT_FOUND, "User not found"));
   }
 
-  if (user.role !== "creative") {
+  if (user.role !== "client") {
     return next(
-      new AppError(httpStatus.FORBIDDEN, "Only creatives can upload works"),
+      new AppError(httpStatus.FORBIDDEN, "Only client can upload works"),
     );
   }
 
@@ -166,9 +187,12 @@ export const deleteWork = catchAsync(async (req, res, next) => {
     return next(new AppError(httpStatus.NOT_FOUND, "Work not found"));
   }
 
-  // Delete images from cloudinary
   for (const image of work.images) {
-    await deleteFromCloudinary(image.public_id);
+    const resourceType =
+      image.resource_type ||
+      (image.url?.includes("/video/") ? "video" : "image");
+
+    await deleteFromCloudinary(image.public_id, resourceType);
   }
 
   user.works.pull(workId);
@@ -287,12 +311,19 @@ export const deleteProject = catchAsync(async (req, res, next) => {
 
   // Delete images from cloudinary
   for (const image of project.images) {
-    await deleteFromCloudinary(image.public_id);
+    const resourceType =
+      image.resource_type ||
+      (image.url?.includes("/video/") ? "video" : "image");
+
+    await deleteFromCloudinary(image.public_id, resourceType);
   }
 
   // Delete videos from cloudinary
   for (const video of project.videos) {
-    await deleteFromCloudinary(video.public_id);
+    const resourceType =
+      video.resource_type ||
+      (video.url?.includes("/video/") ? "video" : "image");
+    await deleteFromCloudinary(video.public_id, resourceType);
   }
 
   user.projects.pull(projectId);
@@ -394,6 +425,10 @@ export const getNearbyUsers = catchAsync(async (req, res, next) => {
     query.role = role;
   }
 
+  if (req.user._id) {
+    query._id = { $ne: req.user._id };
+  }
+
   const users = await User.find(query)
     .select(
       "-password -password_reset_token -refreshToken -emailVerificationOTP",
@@ -426,6 +461,10 @@ export const searchUsers = catchAsync(async (req, res, next) => {
 
   if (role) {
     searchQuery.role = role;
+  }
+
+  if (req.user._id) {
+    searchQuery._id = { $ne: req.user._id };
   }
 
   const skip = (Number(page) - 1) * Number(limit);

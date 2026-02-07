@@ -9,7 +9,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 
 // Generate JWT tokens
 const generateTokens = (userId) => {
-  const accessToken = jwt.sign({ userId }, process.env.JWT_ACCESS_SECRET, {
+  const accessToken = jwt.sign({ _id: userId }, process.env.JWT_ACCESS_SECRET, {
     expiresIn: process.env.JWT_ACCESS_EXPIRY || "15m",
   });
 
@@ -67,7 +67,6 @@ export const register = catchAsync(async (req, res, next) => {
   await sendEmail({
     to: email,
     subject: "Email Verification - OTP",
-    text: `Your OTP for email verification is: ${otp}. Valid for 10 minutes.`,
     html: `<p>Your OTP for email verification is: <strong>${otp}</strong></p><p>Valid for 10 minutes.</p>`,
   });
 

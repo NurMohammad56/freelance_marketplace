@@ -152,6 +152,11 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
+    specialRole: {
+      type: String,
+      default: "",
+    },
+
     // Blue badge verification status for creatives
     isVerified: {
       type: Boolean,

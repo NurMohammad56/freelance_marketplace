@@ -1,23 +1,31 @@
-import nodemailer from 'nodemailer';
-export const sendEmail = async (to,subject, html) => {
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
+export const sendEmail = async ({ to, subject, html }) => {
+  if (!to) {
+    throw new Error("Recipient email is required");
+  }
+
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: "smtp.gmail.com",
     port: 587,
     secure: false,
     auth: {
-      user: 'sajjadhossainx0@gmail.com',
-      pass: 'vmmlospccbvrttnc',
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
+
   await transporter.sendMail({
-    from: 'sajjadhossainx0@gmail.com', // sender address
+    from: process.env.EMAIL_USER,
     to,
-    subject: subject? subject:  'Password change Link : change it by 10 minutes',
+    subject: subject || "Email Notification",
     html,
   });
 };
 
-export const sendMessageTemplate = ({ email, name,phone, message }) => {
+export const sendMessageTemplate = ({ email, name, phone, message }) => {
   return `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: auto; border: 1px solid #e5e7eb; padding: 30px; border-radius: 12px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
       <header style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
@@ -47,8 +55,7 @@ export const sendMessageTemplate = ({ email, name,phone, message }) => {
   `;
 };
 
-
-export const inviteLinkTemplate = ( inviterName, inviteLink ) => {
+export const inviteLinkTemplate = (inviterName, inviteLink) => {
   return `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: auto; border-radius: 14px; overflow: hidden; background-color: #f9fafb; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
       

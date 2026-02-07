@@ -11,7 +11,6 @@ const portfolioSchema = new mongoose.Schema(
 
     title: {
       type: String,
-      required: true,
       trim: true,
     },
 
@@ -22,7 +21,6 @@ const portfolioSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      required: true,
       index: true,
     },
 
@@ -39,28 +37,12 @@ const portfolioSchema = new mongoose.Schema(
       },
     ],
 
-    videos: [
-      {
-        public_id: {
-          type: String,
-        },
-        url: {
-          type: String,
-        },
-      },
-    ],
-
     tags: [
       {
         type: String,
         trim: true,
       },
     ],
-
-    projectUrl: {
-      type: String,
-      default: "",
-    },
 
     completionDate: {
       type: Date,

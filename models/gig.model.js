@@ -25,11 +25,6 @@ const gigSchema = new mongoose.Schema(
       required: true,
     },
 
-    subCategory: {
-      type: String,
-      default: "",
-    },
-
     paymentPerHour: {
       type: Number,
       required: true,
