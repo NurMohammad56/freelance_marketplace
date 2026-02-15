@@ -458,7 +458,6 @@ export const searchUsers = catchAsync(async (req, res) => {
   const skip = (Number(page) - 1) * Number(limit);
   const parsedLimit = Number(limit);
 
-
   const gigMatch = {
     isDeleted: false,
     isActive: true,
@@ -473,7 +472,6 @@ export const searchUsers = catchAsync(async (req, res) => {
   if (service) {
     gigMatch.service = service;
   }
-
 
   const pipeline = [
     { $match: gigMatch },
@@ -521,9 +519,7 @@ export const searchUsers = catchAsync(async (req, res) => {
     });
   }
 
-
   const totalPipeline = [...pipeline, { $count: "count" }];
-
 
   pipeline.push(
     {
