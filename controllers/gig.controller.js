@@ -23,6 +23,7 @@ export const createGig = catchAsync(async (req, res, next) => {
     revisions,
     tags,
     completedProgramCreative,
+    service,
   } = req.body;
 
   // Check if user is creative
@@ -72,6 +73,7 @@ export const createGig = catchAsync(async (req, res, next) => {
     completedProgramCreative,
     images,
     reels,
+    service,
   });
 
   const populatedGig = await Gig.findById(gig._id).populate(
@@ -268,6 +270,7 @@ export const updateGig = catchAsync(async (req, res, next) => {
     revisions,
     tags,
     completedProgramCreative,
+    service,
   } = req.body;
 
   const gig = await Gig.findById(gigId);
@@ -292,6 +295,7 @@ export const updateGig = catchAsync(async (req, res, next) => {
   if (tags) gig.tags = Array.isArray(tags) ? tags : [tags];
   if (completedProgramCreative)
     gig.completedProgramCreative = completedProgramCreative;
+  if (service) gig.service = service;
 
   // Update images if provided
   if (req.files?.images) {

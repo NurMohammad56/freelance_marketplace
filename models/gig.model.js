@@ -25,6 +25,13 @@ const gigSchema = new mongoose.Schema(
       required: true,
     },
 
+    service: {
+      type: String,
+      default: "",
+      required: true,
+      lowercase: true,
+    },
+
     paymentPerHour: {
       type: Number,
       required: true,

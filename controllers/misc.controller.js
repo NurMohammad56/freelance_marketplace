@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import { Category } from "../models/category.model.js";
 import { Verification } from "../models/verification.model.js";
 import { SupportTicket } from "../models/supportTicket.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 import { processPayment } from "../utils/stripe.js";
 import AppError from "../errors/AppError.js";
 import sendResponse from "../utils/sendResponse.js";
@@ -10,6 +10,167 @@ import catchAsync from "../utils/catchAsync.js";
 import { createNotification } from "../utils/notification.js";
 
 // ============ CATEGORY CONTROLLERS ============
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const generateSlug = (value = "") =>
+  value
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+
+const parseBooleanInput = (value) => {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const normalizedValue = value.trim().toLowerCase();
+    if (normalizedValue === "true") return true;
+    if (normalizedValue === "false") return false;
+  }
+  return null;
+};
+
+const normalizeSubCategories = (subCategories) => {
+  if (subCategories === undefined) return undefined;
+
+  let parsedSubCategories = subCategories;
+
+  if (typeof parsedSubCategories === "string") {
+    const trimmedSubCategories = parsedSubCategories.trim();
+    if (!trimmedSubCategories) return [];
+
+    if (
+      trimmedSubCategories.startsWith("[") ||
+      trimmedSubCategories.startsWith("{")
+    ) {
+      try {
+        parsedSubCategories = JSON.parse(trimmedSubCategories);
+      } catch (error) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "subCategories must be a valid JSON array",
+        );
+      }
+    } else {
+      parsedSubCategories = [trimmedSubCategories];
+    }
+  }
+
+  if (!Array.isArray(parsedSubCategories)) {
+    parsedSubCategories = [parsedSubCategories];
+  }
+
+  return parsedSubCategories.map((subCategory) => {
+    const normalizedSubCategory =
+      typeof subCategory === "string" ? { name: subCategory } : subCategory;
+
+    const subCategoryName = normalizedSubCategory?.name?.toString().trim();
+    if (!subCategoryName) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Each sub-category must include a name",
+      );
+    }
+
+    const subCategorySlug = generateSlug(
+      normalizedSubCategory.slug || subCategoryName,
+    );
+
+    if (!subCategorySlug) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Invalid sub-category slug value",
+      );
+    }
+
+    return {
+      name: subCategoryName,
+      slug: subCategorySlug,
+      description: normalizedSubCategory.description?.toString().trim() || "",
+    };
+  });
+};
+
+// @desc    Create category
+// @route   POST /api/categories
+// @access  Private (Admin)
+export const createCategory = catchAsync(async (req, res, next) => {
+  const { name, slug, description = "", order = 0, subCategories, isActive } =
+    req.body;
+
+  const categoryName = name?.toString().trim();
+  if (!categoryName) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Category name is required"));
+  }
+
+  const categorySlug = generateSlug(slug || categoryName);
+  if (!categorySlug) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Invalid category slug value"));
+  }
+
+  const parsedOrder = Number(order);
+  if (Number.isNaN(parsedOrder)) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Order must be a valid number"));
+  }
+
+  const parsedIsActive =
+    isActive === undefined ? true : parseBooleanInput(isActive);
+  if (parsedIsActive === null) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "isActive must be true or false"));
+  }
+
+  const existingCategory = await Category.findOne({
+    $or: [
+      { slug: categorySlug },
+      {
+        name: {
+          $regex: `^${escapeRegex(categoryName)}$`,
+          $options: "i",
+        },
+      },
+    ],
+  });
+
+  if (existingCategory) {
+    return next(
+      new AppError(
+        httpStatus.CONFLICT,
+        "Category with this name or slug already exists",
+      ),
+    );
+  }
+
+  const normalizedSubCategories = normalizeSubCategories(subCategories);
+
+  const categoryData = {
+    name: categoryName,
+    slug: categorySlug,
+    description: description?.toString().trim() || "",
+    order: parsedOrder,
+    isActive: parsedIsActive,
+    subCategories: normalizedSubCategories || [],
+  };
+
+  if (req.file) {
+    const upload = await uploadOnCloudinary(req.file.buffer, {
+      folder: "fiverr-platform/categories",
+    });
+    categoryData.icon = {
+      public_id: upload.public_id,
+      url: upload.secure_url,
+    };
+  }
+
+  const category = await Category.create(categoryData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Category created successfully",
+    data: category,
+  });
+});
 
 // @desc    Get all categories
 // @route   GET /api/categories
@@ -44,6 +205,110 @@ export const getCategoryById = catchAsync(async (req, res, next) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Category retrieved successfully",
+    data: category,
+  });
+});
+
+// @desc    Update category
+// @route   PATCH /api/categories/:categoryId
+// @access  Private (Admin)
+export const updateCategory = catchAsync(async (req, res, next) => {
+  const { categoryId } = req.params;
+  const { name, slug, description, order, subCategories, isActive } = req.body;
+
+  const category = await Category.findById(categoryId);
+
+  if (!category || category.isDeleted) {
+    return next(new AppError(httpStatus.NOT_FOUND, "Category not found"));
+  }
+
+  if (name !== undefined) {
+    const categoryName = name?.toString().trim();
+    if (!categoryName) {
+      return next(new AppError(httpStatus.BAD_REQUEST, "Category name cannot be empty"));
+    }
+
+    const duplicateName = await Category.findOne({
+      _id: { $ne: categoryId },
+      name: {
+        $regex: `^${escapeRegex(categoryName)}$`,
+        $options: "i",
+      },
+    });
+
+    if (duplicateName) {
+      return next(new AppError(httpStatus.CONFLICT, "Category name already exists"));
+    }
+
+    category.name = categoryName;
+  }
+
+  if (slug !== undefined) {
+    const categorySlug = generateSlug(slug);
+    if (!categorySlug) {
+      return next(new AppError(httpStatus.BAD_REQUEST, "Invalid category slug value"));
+    }
+
+    const duplicateSlug = await Category.findOne({
+      _id: { $ne: categoryId },
+      slug: categorySlug,
+    });
+
+    if (duplicateSlug) {
+      return next(new AppError(httpStatus.CONFLICT, "Category slug already exists"));
+    }
+
+    category.slug = categorySlug;
+  }
+
+  if (description !== undefined) {
+    category.description = description?.toString().trim() || "";
+  }
+
+  if (order !== undefined) {
+    const parsedOrder = Number(order);
+    if (Number.isNaN(parsedOrder)) {
+      return next(new AppError(httpStatus.BAD_REQUEST, "Order must be a valid number"));
+    }
+    category.order = parsedOrder;
+  }
+
+  if (isActive !== undefined) {
+    const parsedIsActive = parseBooleanInput(isActive);
+    if (parsedIsActive === null) {
+      return next(new AppError(httpStatus.BAD_REQUEST, "isActive must be true or false"));
+    }
+    category.isActive = parsedIsActive;
+  }
+
+  if (subCategories !== undefined) {
+    category.subCategories = normalizeSubCategories(subCategories);
+  }
+
+  if (req.file) {
+    if (category.icon?.public_id) {
+      const resourceType = category.icon.url?.includes("/video/")
+        ? "video"
+        : "image";
+      await deleteFromCloudinary(category.icon.public_id, resourceType);
+    }
+
+    const upload = await uploadOnCloudinary(req.file.buffer, {
+      folder: "fiverr-platform/categories",
+    });
+
+    category.icon = {
+      public_id: upload.public_id,
+      url: upload.secure_url,
+    };
+  }
+
+  await category.save();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Category updated successfully",
     data: category,
   });
 });

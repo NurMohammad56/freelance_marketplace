@@ -7,6 +7,7 @@ import {
 import AppError from "../errors/AppError.js";
 import sendResponse from "../utils/sendResponse.js";
 import catchAsync from "../utils/catchAsync.js";
+import { Gig } from "../models/gig.model.js";
 
 export const getProfile = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
@@ -443,53 +444,131 @@ export const getNearbyUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-export const searchUsers = catchAsync(async (req, res, next) => {
-  const { query, role, page = 1, limit = 20 } = req.query;
-
-  const searchQuery = {
-    isDeleted: false,
-    accountStatus: "approved",
-  };
-
-  if (query) {
-    searchQuery.$or = [
-      { name: { $regex: query, $options: "i" } },
-      { bio: { $regex: query, $options: "i" } },
-      { interests: { $in: [new RegExp(query, "i")] } },
-    ];
-  }
-
-  if (role) {
-    searchQuery.role = role;
-  }
-
-  if (req.user._id) {
-    searchQuery._id = { $ne: req.user._id };
-  }
+export const searchUsers = catchAsync(async (req, res) => {
+  const {
+    query,
+    minPrice,
+    maxPrice,
+    service,
+    address,
+    page = 1,
+    limit = 20,
+  } = req.query;
 
   const skip = (Number(page) - 1) * Number(limit);
+  const parsedLimit = Number(limit);
 
-  const users = await User.find(searchQuery)
-    .select(
-      "-password -password_reset_token -refreshToken -emailVerificationOTP",
-    )
-    .skip(skip)
-    .limit(Number(limit))
-    .sort({ createdAt: -1 });
 
-  const total = await User.countDocuments(searchQuery);
+  const gigMatch = {
+    isDeleted: false,
+    isActive: true,
+  };
+
+  if (minPrice || maxPrice) {
+    gigMatch.paymentPerHour = {};
+    if (minPrice) gigMatch.paymentPerHour.$gte = Number(minPrice);
+    if (maxPrice) gigMatch.paymentPerHour.$lte = Number(maxPrice);
+  }
+
+  if (service) {
+    gigMatch.service = service;
+  }
+
+
+  const pipeline = [
+    { $match: gigMatch },
+
+    {
+      $lookup: {
+        from: "users",
+        localField: "creative",
+        foreignField: "_id",
+        as: "creative",
+      },
+    },
+    { $unwind: "$creative" },
+
+    {
+      $match: {
+        "creative.isDeleted": false,
+        "creative.accountStatus": "approved",
+        "creative.role": "creative",
+      },
+    },
+  ];
+
+  if (address) {
+    pipeline.push({
+      $match: {
+        "creative.address": { $regex: address, $options: "i" },
+      },
+    });
+  }
+
+  if (query) {
+    pipeline.push({
+      $match: {
+        $or: [
+          { title: { $regex: query, $options: "i" } },
+          { about: { $regex: query, $options: "i" } },
+          { service: { $regex: query, $options: "i" } },
+          { tags: { $regex: query, $options: "i" } },
+          { "creative.name": { $regex: query, $options: "i" } },
+          { "creative.bio": { $regex: query, $options: "i" } },
+          { "creative.address": { $regex: query, $options: "i" } },
+        ],
+      },
+    });
+  }
+
+
+  const totalPipeline = [...pipeline, { $count: "count" }];
+
+
+  pipeline.push(
+    {
+      $project: {
+        title: 1,
+        about: 1,
+        service: 1,
+        paymentPerHour: 1,
+        rating: 1,
+        reviewCount: 1,
+        images: 1,
+        createdAt: 1,
+        creative: {
+          _id: "$creative._id",
+          name: "$creative.name",
+          bio: "$creative.bio",
+          address: "$creative.address",
+          profileImage: "$creative.profileImage",
+          isVerified: "$creative.isVerified",
+        },
+      },
+    },
+    { $sort: { createdAt: -1 } },
+    { $skip: skip },
+    { $limit: parsedLimit },
+  );
+
+  const [gigs, totalResult] = await Promise.all([
+    Gig.aggregate(pipeline),
+    Gig.aggregate(totalPipeline),
+  ]);
+
+  const total = totalResult[0]?.count || 0;
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: 200,
     success: true,
-    message: "Users retrieved successfully",
+    message: "Search results retrieved successfully",
     data: {
-      users,
+      gigs,
       pagination: {
         currentPage: Number(page),
-        totalPages: Math.ceil(total / Number(limit)),
-        totalUsers: total,
-        limit: Number(limit),
+        totalPages: Math.ceil(total / parsedLimit),
+        totalResults: total,
+        limit: parsedLimit,
       },
     },
   });
