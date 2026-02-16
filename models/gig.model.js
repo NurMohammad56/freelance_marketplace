@@ -20,11 +20,6 @@ const gigSchema = new mongoose.Schema(
       default: "",
     },
 
-    category: {
-      type: String,
-      required: true,
-    },
-
     service: {
       type: String,
       default: "",

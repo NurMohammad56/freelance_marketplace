@@ -17,7 +17,6 @@ export const createGig = catchAsync(async (req, res, next) => {
   const {
     title,
     about,
-    category,
     paymentPerHour,
     deliveryTime,
     revisions,
@@ -65,7 +64,6 @@ export const createGig = catchAsync(async (req, res, next) => {
     creative: userId,
     title,
     about,
-    category,
     paymentPerHour,
     deliveryTime: deliveryTime || 1,
     revisions: revisions || 1,
@@ -96,7 +94,7 @@ export const getAllGigs = catchAsync(async (req, res, next) => {
   const {
     page = 1,
     limit = 20,
-    category,
+    service,
     minPrice,
     maxPrice,
     search,
@@ -109,7 +107,7 @@ export const getAllGigs = catchAsync(async (req, res, next) => {
     isDeleted: false,
   };
 
-  if (category) query.category = category;
+  if (service) query.service = service;
 
   if (minPrice || maxPrice) {
     query.paymentPerHour = {};
@@ -264,13 +262,12 @@ export const updateGig = catchAsync(async (req, res, next) => {
   const {
     title,
     about,
-    category,
+    service,
     paymentPerHour,
     deliveryTime,
     revisions,
     tags,
     completedProgramCreative,
-    service,
   } = req.body;
 
   const gig = await Gig.findById(gigId);
@@ -288,7 +285,7 @@ export const updateGig = catchAsync(async (req, res, next) => {
   // Update fields
   if (title) gig.title = title;
   if (about) gig.about = about;
-  if (category) gig.category = category;
+  if (service) gig.service = service;
   if (paymentPerHour) gig.paymentPerHour = paymentPerHour;
   if (deliveryTime) gig.deliveryTime = deliveryTime;
   if (revisions !== undefined) gig.revisions = revisions;
@@ -423,7 +420,7 @@ export const deleteGig = catchAsync(async (req, res, next) => {
 // @route   GET /api/gigs/top-rated
 // @access  Public
 export const getTopRatedGigs = catchAsync(async (req, res, next) => {
-  const { limit = 10, category } = req.query;
+  const { limit = 10, service } = req.query;
 
   const query = {
     isActive: true,
@@ -431,7 +428,7 @@ export const getTopRatedGigs = catchAsync(async (req, res, next) => {
     reviewCount: { $gte: 1 },
   };
 
-  if (category) query.category = category;
+  if (service) query.service = service;
 
   const gigs = await Gig.find(query)
     .populate("creative", "name email profileImage isVerified")
