@@ -19,11 +19,11 @@ export const createJobPost = catchAsync(async (req, res, next) => {
   const {
     title,
     description,
-    category,
+    service,
     minBudget,
     maxBudget,
-    duration,
-    skillsRequired,
+    date,
+    time,
     isPremium,
   } = req.body;
 
@@ -50,17 +50,13 @@ export const createJobPost = catchAsync(async (req, res, next) => {
     client: userId,
     title,
     description,
-    category,
+    service,
     budget: {
       min: minBudget,
       max: maxBudget,
     },
-    duration,
-    skillsRequired: skillsRequired
-      ? Array.isArray(skillsRequired)
-        ? skillsRequired
-        : [skillsRequired]
-      : [],
+    date,
+    time,
     attachments,
     isPremium: isPremium === "true",
     status: "open",
@@ -145,7 +141,7 @@ export const getAllJobPosts = catchAsync(async (req, res, next) => {
   const {
     page = 1,
     limit = 20,
-    category,
+    service,
     minBudget,
     maxBudget,
     duration,
@@ -160,7 +156,7 @@ export const getAllJobPosts = catchAsync(async (req, res, next) => {
   };
 
   if (status) query.status = status;
-  if (category) query.category = category;
+  if (service) query.service = service;
   if (duration) query.duration = duration;
 
   if (minBudget || maxBudget) {
@@ -274,15 +270,8 @@ export const getMyJobPosts = catchAsync(async (req, res, next) => {
 export const updateJobPost = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
   const { jobPostId } = req.params;
-  const {
-    title,
-    description,
-    category,
-    minBudget,
-    maxBudget,
-    duration,
-    skillsRequired,
-  } = req.body;
+  const { title, description, service, minBudget, maxBudget, date, time } =
+    req.body;
 
   const jobPost = await JobPost.findById(jobPostId);
 
@@ -311,12 +300,9 @@ export const updateJobPost = catchAsync(async (req, res, next) => {
   // Update fields
   if (title) jobPost.title = title;
   if (description) jobPost.description = description;
-  if (category) jobPost.category = category;
-  if (duration) jobPost.duration = duration;
-  if (skillsRequired)
-    jobPost.skillsRequired = Array.isArray(skillsRequired)
-      ? skillsRequired
-      : [skillsRequired];
+  if (service) jobPost.service = service;
+  if (date) jobPost.date = date;
+  if (time) jobPost.time = time;
 
   if (minBudget || maxBudget) {
     if (minBudget) jobPost.budget.min = minBudget;

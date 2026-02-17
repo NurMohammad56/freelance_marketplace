@@ -18,36 +18,32 @@ const jobPostSchema = new mongoose.Schema(
       required: true,
     },
 
-    category: {
+    service: {
       type: String,
+      default: "",
       required: true,
+      lowercase: true,
     },
 
     budget: {
       min: {
         type: Number,
-        required: true,
         min: 0,
       },
       max: {
         type: Number,
-        required: true,
         min: 0,
       },
     },
 
-    duration: {
-      type: String,
-      enum: ["short", "medium", "long"],
-      default: "medium",
+    date: {
+      type: Date,
+      default: Date.now,
     },
 
-    skillsRequired: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+    time: {
+      type: String,
+    },
 
     attachments: [
       {
@@ -147,7 +143,6 @@ const jobPostSchema = new mongoose.Schema(
 jobPostSchema.index({
   title: "text",
   description: "text",
-  skillsRequired: "text",
 });
 jobPostSchema.index({ category: 1, status: 1, isPremium: -1 });
 jobPostSchema.index({ createdAt: -1 });
