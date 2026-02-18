@@ -63,11 +63,6 @@ const userSchema = new mongoose.Schema(
     // Creative works (for portfolio)
     works: [
       {
-        title: {
-          type: String,
-          trim: true,
-          required: true,
-        },
         images: [
           {
             public_id: {
@@ -91,18 +86,6 @@ const userSchema = new mongoose.Schema(
           default: "",
         },
         images: [
-          {
-            public_id: {
-              type: String,
-              required: true,
-            },
-            url: {
-              type: String,
-              required: true,
-            },
-          },
-        ],
-        videos: [
           {
             public_id: {
               type: String,

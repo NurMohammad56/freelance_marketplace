@@ -121,7 +121,6 @@ export const updateProfile = catchAsync(async (req, res, next) => {
 
 export const addWork = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
-  const { workTitle } = req.body;
 
   const user = await User.findById(userId);
   if (!user) {
@@ -132,10 +131,6 @@ export const addWork = catchAsync(async (req, res, next) => {
     return next(
       new AppError(httpStatus.FORBIDDEN, "Only client can upload works"),
     );
-  }
-
-  if (!workTitle) {
-    return next(new AppError(httpStatus.BAD_REQUEST, "Work title is required"));
   }
 
   if (!req.files || req.files.length === 0) {
@@ -160,7 +155,6 @@ export const addWork = catchAsync(async (req, res, next) => {
   }
 
   user.works.push({
-    title: workTitle,
     images,
   });
 
@@ -225,20 +219,13 @@ export const addProject = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (
-    !req.files ||
-    (req.files.images?.length === 0 && req.files.videos?.length === 0)
-  ) {
+  if (!req.files || req.files.images?.length === 0) {
     return next(
-      new AppError(
-        httpStatus.BAD_REQUEST,
-        "At least one image or video is required",
-      ),
+      new AppError(httpStatus.BAD_REQUEST, "At least one image is required"),
     );
   }
 
   const images = [];
-  const videos = [];
 
   // Upload images
   if (req.files.images) {
@@ -260,30 +247,9 @@ export const addProject = catchAsync(async (req, res, next) => {
     }
   }
 
-  // Upload videos
-  if (req.files.videos) {
-    if (req.files.videos.length > 3) {
-      return next(
-        new AppError(
-          httpStatus.BAD_REQUEST,
-          "Maximum 3 videos allowed per project",
-        ),
-      );
-    }
-
-    for (const file of req.files.videos) {
-      const upload = await uploadOnCloudinary(file.buffer);
-      videos.push({
-        public_id: upload.public_id,
-        url: upload.secure_url,
-      });
-    }
-  }
-
   user.projects.push({
     title: projectTitle || "",
     images,
-    videos,
   });
 
   await user.save();
@@ -317,14 +283,6 @@ export const deleteProject = catchAsync(async (req, res, next) => {
       (image.url?.includes("/video/") ? "video" : "image");
 
     await deleteFromCloudinary(image.public_id, resourceType);
-  }
-
-  // Delete videos from cloudinary
-  for (const video of project.videos) {
-    const resourceType =
-      video.resource_type ||
-      (video.url?.includes("/video/") ? "video" : "image");
-    await deleteFromCloudinary(video.public_id, resourceType);
   }
 
   user.projects.pull(projectId);
