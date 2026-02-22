@@ -50,10 +50,21 @@ export const createGig = catchAsync(async (req, res, next) => {
 
   // Upload reels if provided
   const reels = [];
-  if (req.files.reels) {
-    for (const file of req.files.reels) {
+
+  if (req.files?.reels && req.files.reels.length > 0) {
+    let reelsMeta = [];
+
+    if (req.body.reelsMeta) {
+      reelsMeta = JSON.parse(req.body.reelsMeta);
+    }
+
+    for (let i = 0; i < req.files.reels.length; i++) {
+      const file = req.files.reels[i];
       const upload = await uploadOnCloudinary(file.buffer);
+
       reels.push({
+        text: reelsMeta[i]?.text || "",
+        tags: reelsMeta[i]?.tags || [],
         public_id: upload.public_id,
         url: upload.secure_url,
       });
@@ -318,24 +329,34 @@ export const updateGig = catchAsync(async (req, res, next) => {
   }
 
   // Update reels if provided
-  if (req.files?.reels) {
+  if (req.files?.reels && req.files.reels.length > 0) {
     // Delete old reels
     for (const reel of gig.reels) {
-      const resourceType =
-        reel.resource_type ||
-        (reel.url?.includes("/video/") ? "video" : "image");
+      const resourceType = reel.url?.includes("/video/") ? "video" : "image";
+
       await deleteFromCloudinary(reel.public_id, resourceType);
     }
 
-    // Upload new reels
+    let reelsMeta = [];
+
+    if (req.body.reelsMeta) {
+      reelsMeta = JSON.parse(req.body.reelsMeta);
+    }
+
     const reels = [];
-    for (const file of req.files.reels) {
+
+    for (let i = 0; i < req.files.reels.length; i++) {
+      const file = req.files.reels[i];
       const upload = await uploadOnCloudinary(file.buffer);
+
       reels.push({
+        text: reelsMeta[i]?.text || "",
+        tags: reelsMeta[i]?.tags || [],
         public_id: upload.public_id,
         url: upload.secure_url,
       });
     }
+
     gig.reels = reels;
   }
 

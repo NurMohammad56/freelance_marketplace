@@ -53,13 +53,25 @@ const gigSchema = new mongoose.Schema(
 
     reels: [
       {
+        text: {
+          type: String,
+          default: "",
+        },
+        tags: [
+          {
+            type: String,
+            trim: true,
+          },
+        ],
         public_id: {
           type: String,
+          required: true,
         },
         url: {
           type: String,
+          required: true,
         },
-      },
+      }
     ],
 
     tags: [
