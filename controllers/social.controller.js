@@ -15,12 +15,7 @@ import catchAsync from "../utils/catchAsync.js";
 // @access  Private
 export const toggleLike = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
-  const {
-    targetUserId,
-    targetType = "user",
-    gigId,
-    likeType = "like",
-  } = req.body;
+  const { targetUserId, targetType = "user", likeType = "like" } = req.body;
 
   if (!["like", "dislike"].includes(likeType)) {
     return next(new AppError(httpStatus.BAD_REQUEST, "Invalid like type"));
@@ -37,7 +32,6 @@ export const toggleLike = catchAsync(async (req, res, next) => {
     liker: userId,
     liked: targetUserId,
     targetType,
-    ...(gigId && { gig: gigId }),
   });
 
   if (existingLike) {
@@ -69,7 +63,6 @@ export const toggleLike = catchAsync(async (req, res, next) => {
     liked: targetUserId,
     likeType,
     targetType,
-    ...(gigId && { gig: gigId }),
   });
 
   sendResponse(res, {
@@ -280,13 +273,12 @@ export const reportUser = catchAsync(async (req, res, next) => {
     reportType,
     reason,
     description,
-    gigId,
     orderId,
     reviewId,
     messageId,
   } = req.body;
 
-  if (!["user", "gig", "order", "review", "message"].includes(reportType)) {
+  if (!["user", "order", "review", "message"].includes(reportType)) {
     return next(new AppError(httpStatus.BAD_REQUEST, "Invalid report type"));
   }
 
@@ -328,7 +320,6 @@ export const reportUser = catchAsync(async (req, res, next) => {
     reason,
     description,
     evidence,
-    ...(gigId && { gig: gigId }),
     ...(orderId && { order: orderId }),
     ...(reviewId && { review: reviewId }),
     ...(messageId && { message: messageId }),

@@ -18,17 +18,11 @@ const reportSchema = new mongoose.Schema(
 
     reportType: {
       type: String,
-      enum: ["user", "gig", "order", "review", "message"],
+      enum: ["user", "order", "review", "message"],
       required: true,
     },
 
     // Related entities
-    gig: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Gig",
-      default: null,
-    },
-
     order: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",

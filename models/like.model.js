@@ -26,14 +26,8 @@ const likeSchema = new mongoose.Schema(
     // Can like user profile, gig, or portfolio
     targetType: {
       type: String,
-      enum: ["user", "gig"],
+      enum: ["user"],
       default: "user",
-    },
-
-    gig: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Gig",
-      default: null,
     },
 
     isDeleted: {
