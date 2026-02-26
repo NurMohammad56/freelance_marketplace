@@ -6,6 +6,7 @@ import AppError from "../errors/AppError.js";
 import sendResponse from "../utils/sendResponse.js";
 import catchAsync from "../utils/catchAsync.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import sendResponse from "./../utils/sendResponse";
 
 // Generate JWT tokens
 const generateTokens = (userId) => {
@@ -383,12 +384,21 @@ export const logout = catchAsync(async (req, res, next) => {
 });
 
 export const changePassword = catchAsync(async (req, res, next) => {
-  const { currentPassword, newPassword } = req.body;
+  const { currentPassword, newPassword, email } = req.body;
   const userId = req.user._id;
 
-  const user = await User.findById(userId).select("+password");
+  if (!email) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Email are required"));
+  }
+
+  const user = await User.findById({ _id: userId, email }).select("+password");
   if (!user) {
-    return next(new AppError(httpStatus.NOT_FOUND, "User not found"));
+    return sendResponse(res, {
+      statusCode: httpStatus.NOT_FOUND,
+      success: false,
+      message: "No user found with this email",
+      data: null,
+    });
   }
 
   // Verify current password
