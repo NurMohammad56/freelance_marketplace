@@ -11,6 +11,7 @@ import catchAsync from "../utils/catchAsync.js";
 import { createNotification } from "../utils/notification.js";
 import { Chat } from "../models/chat.model.js";
 import { CustomOffer } from "../models/customOffer.model.js";
+import { Message } from "../models/message.model.js";
 
 // Generate unique order ID
 const generateOrderId = () => {
@@ -200,6 +201,14 @@ export const createOrderFromCustomOffer = catchAsync(async (req, res, next) => {
     expiresAt: expiresAt || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     status: "pending",
   });
+
+  await Message.create({
+    chat: chatId,
+    sender: creativeId,
+    type: "custom_offer",
+    content: `Sent a custom offer: ${title}`,
+    customOffer: customOffer._id,
+  })
 
   // Notify client
   await createNotification({
