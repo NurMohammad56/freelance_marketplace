@@ -16,6 +16,7 @@ import categoryRoutes from "../route//category.route.js";
 import verificationRoutes from "../route//verification.route.js";
 import supportRoutes from "../route//support.route.js";
 import webRoutes from "../route//website.route.js";
+import chatRoutes from "../route/chat.route.js";
 
 const router = express.Router();
 
@@ -44,6 +45,7 @@ router.use("/categories", categoryRoutes);
 router.use("/verifications", verificationRoutes);
 router.use("/support", supportRoutes);
 router.use("/website", webRoutes);
+router.use("/chat", chatRoutes);
 
 // 404 handler for undefined routes
 router.all("/", (req, res) => {
