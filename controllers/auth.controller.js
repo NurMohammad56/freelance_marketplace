@@ -6,7 +6,6 @@ import AppError from "../errors/AppError.js";
 import sendResponse from "../utils/sendResponse.js";
 import catchAsync from "../utils/catchAsync.js";
 import { sendEmail } from "../utils/sendEmail.js";
-import sendResponse from "./../utils/sendResponse";
 
 // Generate JWT tokens
 const generateTokens = (userId) => {
