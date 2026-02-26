@@ -1,5 +1,7 @@
 import httpStatus from "http-status";
+import mongoose from "mongoose";
 import { User } from "../models/user.model.js";
+import { JobPost } from "../models/jobPost.model.js";
 import {
   uploadOnCloudinary,
   deleteFromCloudinary,
@@ -8,6 +10,8 @@ import AppError from "../errors/AppError.js";
 import sendResponse from "../utils/sendResponse.js";
 import catchAsync from "../utils/catchAsync.js";
 import { Gig } from "../models/gig.model.js";
+import { Reel } from "../models/reels.model.js";
+import { Portfolio } from "../models/portfolio.model.js";
 
 export const getProfile = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
@@ -46,6 +50,89 @@ export const getUserById = catchAsync(async (req, res, next) => {
     success: true,
     message: "User profile retrieved successfully",
     data: user,
+  });
+});
+
+export const getClientById = catchAsync(async (req, res, next) => {
+  const { userId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Invalid user ID"));
+  }
+
+  const client = await User.findById(userId)
+    .select(
+      "-password -password_reset_token -refreshToken -emailVerificationOTP -emailVerificationOTPExpiry",
+    )
+    .select("-settings");
+
+  if (!client || client.isDeleted || client.role !== "client") {
+    return next(new AppError(httpStatus.NOT_FOUND, "Client not found"));
+  }
+
+  const jobPosts = await JobPost.find({
+    client: userId,
+    isDeleted: false,
+  })
+    .populate("client", "name email profileImage")
+    .sort({ createdAt: -1 });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Client profile retrieved successfully",
+    data: {
+      client,
+      works: client.works || [],
+      projects: client.projects || [],
+      jobPosts,
+    },
+  });
+});
+
+export const getCreativeById = catchAsync(async (req, res, next) => {
+  const { userId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Invalid user ID"));
+  }
+
+  const creative = await User.findById(userId)
+    .select(
+      "-password -password_reset_token -refreshToken -emailVerificationOTP -emailVerificationOTPExpiry",
+    )
+    .select("-settings");
+
+  if (!creative || creative.isDeleted || creative.role !== "creative") {
+    return next(new AppError(httpStatus.NOT_FOUND, "Creative not found"));
+  }
+
+  const [gigs, reels, portfolio] = await Promise.all([
+    Gig.find({
+      creative: userId,
+      isActive: true,
+      isDeleted: false,
+    }).sort({ createdAt: -1 }),
+    Reel.find({
+      creative: userId,
+      isDeleted: false,
+    }).sort({ createdAt: -1 }),
+    Portfolio.find({
+      creative: userId,
+      isDeleted: false,
+    }).sort({ isFeatured: -1, createdAt: -1 }),
+  ]);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Creative profile retrieved successfully",
+    data: {
+      creative,
+      gigs,
+      reels,
+      portfolio,
+    },
   });
 });
 

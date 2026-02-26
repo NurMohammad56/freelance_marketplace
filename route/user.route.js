@@ -2,6 +2,8 @@ import express from "express";
 import {
   getProfile,
   getUserById,
+  getClientById,
+  getCreativeById,
   updateProfile,
   addWork,
   deleteWork,
@@ -20,6 +22,8 @@ const router = express.Router();
 // Public routes
 router.get("/search", protect, searchUsers);
 router.get("/nearby", protect, getNearbyUsers);
+router.get("/client/:userId", getClientById);
+router.get("/creative/:userId", getCreativeById);
 router.get("/:userId", getUserById);
 
 // Protected routes
