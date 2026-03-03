@@ -1,0 +1,592 @@
+{
+  "info": {
+    "_postman_id": "d3d2b748-4f2f-4edc-8f21-534e5f4825c9",
+    "name": "backend_glenkhumalo API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"email\": \"\",\n  \"password\": \"\",\n  \"confirmPassword\": \"\",\n  \"role\": \"client\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\",\n  \"otp\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "verify"]
+            }
+          }
+        },
+        {
+          "name": "Forget Password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forget",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "forget"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\",\n  \"otp\": \"\",\n  \"password\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "reset-password"]
+            }
+          }
+        },
+        {
+          "name": "Change Password (Auth)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"\",\n  \"newPassword\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh-token"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "", "type": "text" },
+                { "key": "bio", "value": "", "type": "text" },
+                { "key": "interests", "value": "", "type": "text" },
+                { "key": "lng", "value": "", "type": "text" },
+                { "key": "lat", "value": "", "type": "text" },
+                { "key": "addWork", "value": "false", "type": "text" },
+                { "key": "workTitle", "value": "", "type": "text" },
+                { "key": "avatar", "src": "", "type": "file" },
+                { "key": "workImages", "src": "", "type": "file" },
+                { "key": "projects", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/update-profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "update-profile"]
+            }
+          }
+        },
+        {
+          "name": "Change Password (User)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"\",\n  \"newPassword\": \"\",\n  \"confirmPassword\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "change-password"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gigs",
+      "item": [
+        {
+          "name": "Create Gig",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "about", "value": "", "type": "text" },
+                { "key": "paymentPerHour", "value": "", "type": "text" },
+                { "key": "completedProgramCreative", "value": "", "type": "text" },
+                { "key": "images", "src": "", "type": "file" },
+                { "key": "reels", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/gigs",
+              "host": ["{{baseUrl}}"],
+              "path": ["gigs"]
+            }
+          }
+        },
+        {
+          "name": "Get My Gigs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/gigs/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["gigs", "me"]
+            }
+          }
+        },
+        {
+          "name": "Get Public Gigs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/gigs",
+              "host": ["{{baseUrl}}"],
+              "path": ["gigs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "q", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Gig",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"\",\n  \"about\": \"\",\n  \"paymentPerHour\": \"\",\n  \"completedProgramCreative\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/gigs/:gigId",
+              "host": ["{{baseUrl}}"],
+              "path": ["gigs", ":gigId"]
+            }
+          }
+        },
+        {
+          "name": "Delete Gig",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/gigs/:gigId",
+              "host": ["{{baseUrl}}"],
+              "path": ["gigs", ":gigId"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Website",
+      "item": [
+        {
+          "name": "Get All Content",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/website",
+              "host": ["{{baseUrl}}"],
+              "path": ["website"]
+            }
+          }
+        },
+        {
+          "name": "Create Hero",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "bodyText", "value": "", "type": "text" },
+                { "key": "image", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/hero",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "hero"]
+            }
+          }
+        },
+        {
+          "name": "Update Hero",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "bodyText", "value": "", "type": "text" },
+                { "key": "image", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/hero",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "hero"]
+            }
+          }
+        },
+        {
+          "name": "Get Hero",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/website/hero",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "hero"]
+            }
+          }
+        },
+        {
+          "name": "Create About",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "bodyText", "value": "", "type": "text" },
+                { "key": "image", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/about",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "about"]
+            }
+          }
+        },
+        {
+          "name": "Update About",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "bodyText", "value": "", "type": "text" },
+                { "key": "image", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/about",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "about"]
+            }
+          }
+        },
+        {
+          "name": "Get About",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/website/about",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "about"]
+            }
+          }
+        },
+        {
+          "name": "Create Creative",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "bodyText", "value": "", "type": "text" },
+                { "key": "heroImage", "src": "", "type": "file" },
+                { "key": "images", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/creative",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "creative"]
+            }
+          }
+        },
+        {
+          "name": "Update Creative",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "bodyText", "value": "", "type": "text" },
+                { "key": "heroImage", "src": "", "type": "file" },
+                { "key": "images", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/creative",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "creative"]
+            }
+          }
+        },
+        {
+          "name": "Get Creative",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/website/creative",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "creative"]
+            }
+          }
+        },
+        {
+          "name": "Create Client",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "bodyText", "value": "", "type": "text" },
+                { "key": "image", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/client",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "client"]
+            }
+          }
+        },
+        {
+          "name": "Update Client",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "", "type": "text" },
+                { "key": "bodyText", "value": "", "type": "text" },
+                { "key": "image", "src": "", "type": "file" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/client",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "client"]
+            }
+          }
+        },
+        {
+          "name": "Get Client",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/website/client",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "client"]
+            }
+          }
+        },
+        {
+          "name": "Create Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"\",\n  \"phoneNumber\": \"\",\n  \"email\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "contact"]
+            }
+          }
+        },
+        {
+          "name": "Update Contact",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"\",\n  \"phoneNumber\": \"\",\n  \"email\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "contact"]
+            }
+          }
+        },
+        {
+          "name": "Get Contact",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/website/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["website", "contact"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

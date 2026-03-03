@@ -20,17 +20,45 @@ export const getProfile = catchAsync(async (req, res, next) => {
 });
 
 export const updateProfile = catchAsync(async (req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.user?._id;
 
-  const { name, lng, lat, bio, interests, addWork, addGig, workTitle } =
-    req.body;
+  const {
+    name,
+    firstName,
+    lastName,
+    lng,
+    lat,
+    bio,
+    interests,
+    addWork,
+    addGig,
+    workTitle,
+    phone,
+    address,
+  } = req.body;
+
+  const combinedName =
+    name ||
+    [firstName, lastName]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+
+  const files = req.files || {};
+  const avatarFile = files.avatar?.[0];
+  const workImages = files.workImages;
+  const projectFiles = files.projects;
 
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     {
-      ...(name && { name }),
+      ...(combinedName && { name: combinedName }),
+      ...(firstName && { firstName }),
+      ...(lastName && { lastName }),
       ...(bio && { bio }),
       ...(interests && { interests }),
+      ...(phone && { phone }),
+      ...(address && { address }),
       ...(lng &&
         lat && {
           locationGeo: {
@@ -42,8 +70,12 @@ export const updateProfile = catchAsync(async (req, res, next) => {
     { new: true }
   );
 
-  if (req.file) {
-    const upload = await uploadOnCloudinary(req.file.buffer);
+  if (!updatedUser) {
+    return next(new AppError(httpStatus.NOT_FOUND, "User not found"));
+  }
+
+  if (avatarFile) {
+    const upload = await uploadOnCloudinary(avatarFile.buffer);
     updatedUser.profileImage = {
       public_id: upload.public_id,
       url: upload.secure_url,
@@ -51,25 +83,29 @@ export const updateProfile = catchAsync(async (req, res, next) => {
   }
 
   if (addWork === "true") {
-    if (userId.role !== "creative") {
+    if (req.user.role !== "creative") {
       return next(new AppError(403, "Only creatives can upload works"));
+    }
+
+    if (!Array.isArray(updatedUser.works)) {
+      updatedUser.works = [];
     }
 
     if (!workTitle) {
       return next(new AppError(400, "Work title is required"));
     }
 
-    if (!req.files || req.files.length === 0) {
+    if (!workImages || workImages.length === 0) {
       return next(new AppError(400, "Work images are required"));
     }
 
-    if (req.files.length > 4) {
+    if (workImages.length > 4) {
       return next(new AppError(400, "Maximum 5 images allowed per work"));
     }
 
     const images = [];
 
-    for (const file of req.files) {
+    for (const file of workImages) {
       const upload = await uploadOnCloudinary(file.buffer);
       images.push({
         public_id: upload.public_id,
@@ -83,13 +119,17 @@ export const updateProfile = catchAsync(async (req, res, next) => {
     });
   }
 
-  if (req.files.projects) {
-    if (req.files.projects.length > 4) {
+  if (projectFiles?.length) {
+    if (projectFiles.length > 4) {
       return next(new AppError(400, "Maximum 4 images allowed per work"));
     }
 
+    if (!Array.isArray(updatedUser.projects)) {
+      updatedUser.projects = [];
+    }
+
     const images = [];
-    for (const file of req.files.projects) {
+    for (const file of projectFiles) {
       const upload = await uploadOnCloudinary(file.buffer);
       images.push({
         public_id: upload.public_id,
@@ -101,11 +141,15 @@ export const updateProfile = catchAsync(async (req, res, next) => {
 
   await updatedUser.save();
 
+  const safeUser = await User.findById(userId).select(
+    "-password -password_reset_token"
+  );
+
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: "Profile updated successfully",
-    data: updatedUser,
+    data: safeUser,
   });
 });
 
