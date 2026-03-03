@@ -16,25 +16,25 @@ import {
   updateContactSection,
   updateCreativeSection,
   updateHeroSection,
-} from "../controller/website.controller.js";
+} from "../controllers/website.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 import upload from "../middleware/multer.middleware.js";
 
 const router = express.Router();
 
-router.get("/", getWebsiteContent); 
+router.get("/", getWebsiteContent);
 
 router.post(
   "/hero",
   protect,
   upload.fields([{ name: "image", maxCount: 1 }]),
-  createHeroSection
+  createHeroSection,
 );
 router.put(
   "/hero",
   protect,
   upload.fields([{ name: "image", maxCount: 1 }]),
-  updateHeroSection
+  updateHeroSection,
 );
 router.get("/hero", getHeroSection);
 
@@ -42,13 +42,13 @@ router.post(
   "/about",
   protect,
   upload.fields([{ name: "image", maxCount: 1 }]),
-  createAboutSection
+  createAboutSection,
 );
 router.put(
   "/about",
   protect,
   upload.fields([{ name: "image", maxCount: 1 }]),
-  updateAboutSection
+  updateAboutSection,
 );
 router.get("/about", getAboutSection);
 
@@ -59,7 +59,7 @@ router.post(
     { name: "heroImage", maxCount: 1 },
     { name: "images", maxCount: 10 },
   ]),
-  createCreativeSection
+  createCreativeSection,
 );
 router.put(
   "/creative",
@@ -68,7 +68,7 @@ router.put(
     { name: "heroImage", maxCount: 1 },
     { name: "images", maxCount: 10 },
   ]),
-  updateCreativeSection
+  updateCreativeSection,
 );
 router.get("/creative", getCreativeSection);
 
@@ -76,13 +76,13 @@ router.post(
   "/client",
   protect,
   upload.fields([{ name: "image", maxCount: 1 }]),
-  createClientSection
+  createClientSection,
 );
 router.put(
   "/client",
   protect,
   upload.fields([{ name: "image", maxCount: 1 }]),
-  updateClientSection
+  updateClientSection,
 );
 router.get("/client", getClientSection);
 

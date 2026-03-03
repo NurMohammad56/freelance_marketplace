@@ -1,25 +1,30 @@
 import express from "express";
 import {
-  changePassword,
-  forgetPassword,
-  login,
-  logout,
-  refreshToken,
   register,
+  login,
+  verifyEmail,
+  resendOTP,
+  refreshAccessToken,
+  forgotPassword,
   resetPassword,
-  verifyOTP,
-} from "../controller/auth.controller.js";
+  logout,
+  changePassword,
+} from "../controllers/auth.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
+// Public routes
 router.post("/register", register);
 router.post("/login", login);
-router.post("/verify", verifyOTP);
-router.post("/forget", forgetPassword);
+router.post("/refresh-token", refreshAccessToken);
+router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
-router.post("/change-password", protect, changePassword);
-router.post("/refresh-token", refreshToken);
+
+// Protected routes
+router.post("/verify-email", protect, verifyEmail);
+router.post("/resend-otp", protect, resendOTP);
 router.post("/logout", protect, logout);
+router.put("/change-password", protect, changePassword);
 
 export default router;

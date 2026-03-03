@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -9,6 +9,9 @@ import { Server } from "socket.io";
 
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import notFound from "./middleware/notFound.js";
+import { handleMulterError } from "./middleware/multer.middleware.js";
+
+dotenv.config();
 
 const app = express();
 
@@ -27,7 +30,7 @@ app.use(
     credentials: true,
     origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -43,6 +46,8 @@ app.use("/api/v1", router);
 app.get("/", (req, res) => {
   res.send("Server is running...!!");
 });
+
+app.use(handleMulterError);
 
 app.use(globalErrorHandler);
 app.use(notFound);
@@ -80,7 +85,7 @@ server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
 
   try {
-    await mongoose.connect(process.env.MONGO_DB_URL);
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log("MongoDB connected");
   } catch (err) {
     console.error("MongoDB connection error:", err);

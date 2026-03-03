@@ -1,9 +1,14 @@
-const sendResponse = (res, data) => {
-  res.status(data?.statusCode).json({
-    success: data.success,
-    message: data.message,
-    data: data.data,
-  });
+const sendResponse = (res, { statusCode, success, message, data = null }) => {
+  const response = {
+    success,
+    message,
+  };
+
+  if (data !== null) {
+    response.data = data;
+  }
+
+  res.status(statusCode).json(response);
 };
 
 export default sendResponse;
