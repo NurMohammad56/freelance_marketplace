@@ -383,21 +383,35 @@ export const logout = catchAsync(async (req, res, next) => {
 });
 
 export const changePassword = catchAsync(async (req, res, next) => {
-  const { currentPassword, newPassword, email } = req.body;
+  const { currentPassword, newPassword } = req.body;
   const userId = req.user._id;
 
-  if (!email) {
-    return next(new AppError(httpStatus.BAD_REQUEST, "Email are required"));
+  if (!currentPassword || !newPassword) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "Current password and new password are required",
+      ),
+    );
   }
 
-  const user = await User.findById({ _id: userId, email }).select("+password");
+  const user = await User.findById(userId).select("+password");
   if (!user) {
     return sendResponse(res, {
       statusCode: httpStatus.NOT_FOUND,
       success: false,
-      message: "No user found with this email",
+      message: "User not found",
       data: null,
     });
+  }
+
+  if (currentPassword === newPassword) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "New password must be different from current password",
+      ),
+    );
   }
 
   // Verify current password

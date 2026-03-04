@@ -24,7 +24,6 @@ router.get("/search", protect, searchUsers);
 router.get("/nearby", protect, getNearbyUsers);
 router.get("/client/:userId", getClientById);
 router.get("/creative/:userId", getCreativeById);
-router.get("/:userId", getUserById);
 
 // Protected routes
 router.use(protect); // All routes below require authentication
@@ -56,5 +55,8 @@ router.delete("/projects/:projectId", restrictTo("client"), deleteProject);
 // Settings & Account
 router.put("/settings", updateSettings);
 router.delete("/account", deleteAccount);
+
+// Keep dynamic route last to avoid matching fixed routes
+router.get("/:userId", getUserById);
 
 export default router;
