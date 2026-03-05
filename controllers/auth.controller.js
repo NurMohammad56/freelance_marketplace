@@ -1,6 +1,5 @@
 import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import { User } from "../models/user.model.js";
 import AppError from "../errors/AppError.js";
 import sendResponse from "../utils/sendResponse.js";
@@ -24,6 +23,20 @@ const generateTokens = (userId) => {
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
+
+const forgotPasswordEmailTemplate = (name, otp) => `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #1f2937;">
+    <h2 style="margin-bottom: 8px;">Password Reset OTP</h2>
+    <p>Hi ${name || "there"},</p>
+    <p>We received a request to reset your account password.</p>
+    <p style="margin: 16px 0;">
+      Use this OTP to continue:
+      <strong style="font-size: 20px; letter-spacing: 2px;">${otp}</strong>
+    </p>
+    <p>This OTP will expire in 10 minutes.</p>
+    <p>If you did not request this, you can ignore this email.</p>
+  </div>
+`;
 
 export const register = catchAsync(async (req, res, next) => {
   const { name, email, password, role, phone, address } = req.body;
@@ -303,59 +316,118 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     );
   }
 
-  // Generate reset token
-  const resetToken = crypto.randomBytes(32).toString("hex");
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
+  const otp = generateOTP();
+  const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
-  user.password_reset_token = hashedToken;
+  user.passwordResetOTP = otp;
+  user.passwordResetOTPExpiry = otpExpiry;
+  user.passwordResetOTPVerified = false;
+  user.password_reset_token = "";
   await user.save();
-
-  // Send reset email
-  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
   await sendEmail({
     to: email,
-    subject: "Password Reset Request",
-    text: `You requested a password reset. Click this link: ${resetUrl}`,
-    html: `<p>You requested a password reset.</p><p>Click <a href="${resetUrl}">here</a> to reset your password.</p><p>If you didn't request this, please ignore this email.</p>`,
+    subject: "Password Reset OTP",
+    html: forgotPasswordEmailTemplate(user.name, otp),
   });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Password reset link sent to your email",
+    message: "Password reset OTP sent to your email",
+    data: null,
+  });
+});
+
+export const verifyForgotPasswordOTP = catchAsync(async (req, res, next) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return next(
+      new AppError(httpStatus.BAD_REQUEST, "Email and OTP are required"),
+    );
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return next(
+      new AppError(httpStatus.NOT_FOUND, "No user found with this email"),
+    );
+  }
+
+  if (!user.passwordResetOTP || user.passwordResetOTP !== otp) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Invalid OTP"));
+  }
+
+  if (
+    !user.passwordResetOTPExpiry ||
+    new Date() > new Date(user.passwordResetOTPExpiry)
+  ) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "OTP has expired. Please request a new OTP.",
+      ),
+    );
+  }
+
+  user.passwordResetOTPVerified = true;
+  await user.save();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "OTP verified successfully",
     data: null,
   });
 });
 
 export const resetPassword = catchAsync(async (req, res, next) => {
-  const { token, newPassword } = req.body;
+  const { email, newPassword } = req.body;
 
-  if (!token || !newPassword) {
+  if (!email || !newPassword) {
     return next(
       new AppError(
         httpStatus.BAD_REQUEST,
-        "Token and new password are required",
+        "Email and new password are required",
       ),
     );
   }
 
-  // Hash the token from request
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-
-  // Find user with this token
-  const user = await User.findOne({ password_reset_token: hashedToken });
+  const user = await User.findOne({ email }).select("+password");
   if (!user) {
     return next(
-      new AppError(httpStatus.BAD_REQUEST, "Invalid or expired reset token"),
+      new AppError(httpStatus.NOT_FOUND, "No user found with this email"),
+    );
+  }
+
+  if (!user.passwordResetOTPVerified) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "Please verify OTP before resetting password",
+      ),
+    );
+  }
+
+  if (
+    !user.passwordResetOTPExpiry ||
+    new Date() > new Date(user.passwordResetOTPExpiry)
+  ) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "OTP session expired. Please request a new OTP.",
+      ),
     );
   }
 
   // Update password
   user.password = newPassword;
+  user.passwordResetOTP = null;
+  user.passwordResetOTPExpiry = null;
+  user.passwordResetOTPVerified = false;
   user.password_reset_token = "";
   await user.save();
 

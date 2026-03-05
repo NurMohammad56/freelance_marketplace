@@ -8,7 +8,10 @@ const reelSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-
+    title: {
+      type: String,
+      trim: true,
+    },
     tags: [
       {
         type: String,

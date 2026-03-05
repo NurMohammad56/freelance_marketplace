@@ -17,6 +17,7 @@ import verificationRoutes from "../route//verification.route.js";
 import supportRoutes from "../route//support.route.js";
 import webRoutes from "../route//website.route.js";
 import chatRoutes from "../route/chat.route.js";
+import reelsRoutes from "../route/reels.route.js";
 
 const router = express.Router();
 
@@ -46,6 +47,7 @@ router.use("/verifications", verificationRoutes);
 router.use("/support", supportRoutes);
 router.use("/website", webRoutes);
 router.use("/chat", chatRoutes);
+router.use("/reels", reelsRoutes);
 
 // 404 handler for undefined routes
 router.all("/", (req, res) => {

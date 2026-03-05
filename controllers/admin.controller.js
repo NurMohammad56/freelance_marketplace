@@ -106,7 +106,9 @@ export const getAllUsers = catchAsync(async (req, res, next) => {
   const skip = (Number(page) - 1) * Number(limit);
 
   const users = await User.find(query)
-    .select("-password -refreshToken -password_reset_token")
+    .select(
+      "-password -refreshToken -password_reset_token -passwordResetOTP -passwordResetOTPExpiry -passwordResetOTPVerified",
+    )
     .skip(skip)
     .limit(Number(limit))
     .sort({ createdAt: -1 });

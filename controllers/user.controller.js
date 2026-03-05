@@ -17,7 +17,7 @@ export const getProfile = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
 
   const user = await User.findById(userId).select(
-    "-password -password_reset_token -refreshToken",
+    "-password -password_reset_token -passwordResetOTP -passwordResetOTPExpiry -passwordResetOTPVerified -refreshToken",
   );
 
   if (!user) {
@@ -37,7 +37,7 @@ export const getUserById = catchAsync(async (req, res, next) => {
 
   const user = await User.findById(userId)
     .select(
-      "-password -password_reset_token -refreshToken -emailVerificationOTP -emailVerificationOTPExpiry",
+      "-password -password_reset_token -passwordResetOTP -passwordResetOTPExpiry -passwordResetOTPVerified -refreshToken -emailVerificationOTP -emailVerificationOTPExpiry",
     )
     .select("-settings");
 
@@ -62,7 +62,7 @@ export const getClientById = catchAsync(async (req, res, next) => {
 
   const client = await User.findById(userId)
     .select(
-      "-password -password_reset_token -refreshToken -emailVerificationOTP -emailVerificationOTPExpiry",
+      "-password -password_reset_token -passwordResetOTP -passwordResetOTPExpiry -passwordResetOTPVerified -refreshToken -emailVerificationOTP -emailVerificationOTPExpiry",
     )
     .select("-settings");
 
@@ -99,7 +99,7 @@ export const getCreativeById = catchAsync(async (req, res, next) => {
 
   const creative = await User.findById(userId)
     .select(
-      "-password -password_reset_token -refreshToken -emailVerificationOTP -emailVerificationOTPExpiry",
+      "-password -password_reset_token -passwordResetOTP -passwordResetOTPExpiry -passwordResetOTPVerified -refreshToken -emailVerificationOTP -emailVerificationOTPExpiry",
     )
     .select("-settings");
 
@@ -195,7 +195,7 @@ export const updateProfile = catchAsync(async (req, res, next) => {
   await user.save();
 
   const sanitizedUser = await User.findById(userId).select(
-    "-password -refreshToken",
+    "-password -password_reset_token -passwordResetOTP -passwordResetOTPExpiry -passwordResetOTPVerified -refreshToken",
   );
 
   sendResponse(res, {
@@ -477,7 +477,7 @@ export const getNearbyUsers = catchAsync(async (req, res, next) => {
 
   const users = await User.find(query)
     .select(
-      "-password -password_reset_token -refreshToken -emailVerificationOTP",
+      "-password -password_reset_token -passwordResetOTP -passwordResetOTPExpiry -passwordResetOTPVerified -refreshToken -emailVerificationOTP",
     )
     .limit(50);
 

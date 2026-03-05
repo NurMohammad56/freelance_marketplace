@@ -151,6 +151,21 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
+    passwordResetOTP: {
+      type: String,
+      default: null,
+    },
+
+    passwordResetOTPExpiry: {
+      type: Date,
+      default: null,
+    },
+
+    passwordResetOTPVerified: {
+      type: Boolean,
+      default: false,
+    },
+
     refreshToken: {
       type: String,
       default: "",

@@ -1,23 +1,11 @@
 {
   "info": {
+    "_postman_id": "5ab4463f-7a06-43ac-9b6d-1b136c37bcae",
     "name": "GlenKhumalo API - Postman Documentation",
-    "_postman_id": "9b7d2b3f-8f06-4f75-9d8b-6d8c3b0d9e5a",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51876526",
+    "_collection_link": "https://go.postman.co/collection/51876526-5ab4463f-7a06-43ac-9b6d-1b136c37bcae?source=collection_link"
   },
-  "variable": [
-    {
-      "key": "serverUrl",
-      "value": "http://localhost:5000"
-    },
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:5000/api/v1"
-    },
-    {
-      "key": "accessToken",
-      "value": "REPLACE_ME"
-    }
-  ],
   "item": [
     {
       "name": "Misc",
@@ -26,6 +14,7 @@
           "name": "Root Ping (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{serverUrl}}/",
               "host": [
@@ -35,12 +24,14 @@
                 ""
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Health Check (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/health",
               "host": [
@@ -50,7 +41,8 @@
                 "health"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -61,6 +53,16 @@
           "name": "Register (Public)",
           "request": {
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"creative\",\n  \"name\": \"creative\",\n  \"email\": \"creative@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"123 Main St, Anytown, USA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
               "host": [
@@ -70,22 +72,24 @@
                 "auth",
                 "register"
               ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"role\": \"client\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123!\",\n  \"phone\": \"+1234567890\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Login (Public)",
           "request": {
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client@example.com\",\n  \"password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
               "host": [
@@ -95,22 +99,24 @@
                 "auth",
                 "login"
               ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123!\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Refresh Token (Public)",
           "request": {
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"REFRESH_TOKEN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/auth/refresh-token",
               "host": [
@@ -120,17 +126,157 @@
                 "auth",
                 "refresh-token"
               ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email (Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"refreshToken\": \"REFRESH_TOKEN\"\n}",
+              "raw": "{\n  \"otp\": \"437001\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-email"
+              ]
             }
-          }
+          },
+          "response": []
+        },
+        {
+          "name": "Resend OTP (Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout (Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password (Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Password123!\",\n  \"newPassword\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "Forgot Password (Public)",
@@ -146,9 +292,52 @@
                 "forgot-password"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"john@example.com\"\n}",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Verify Reset OTP (Public)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-reset-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-reset-otp"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"otp\": \"123456\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -171,149 +360,18 @@
                 "reset-password"
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"token\": \"RESET_TOKEN\",\n  \"newPassword\": \"NewPassword123!\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Verify Email (Auth)",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/auth/verify-email",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "verify-email"
-              ]
-            },
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"otp\": \"123456\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               }
-            }
-          }
-        },
-        {
-          "name": "Resend OTP (Auth)",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/auth/resend-otp",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "resend-otp"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Logout (Auth)",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/auth/logout",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "logout"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Change Password (Auth)",
-          "request": {
-            "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/auth/change-password",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "change-password"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"currentPassword\": \"Password123!\",\n  \"newPassword\": \"NewPassword123!\"\n}",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"newPassword\": \"NewPassword123!\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -330,39 +388,104 @@
         {
           "name": "Search Users (Public)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/users/search",
+              "raw": "{{baseUrl}}/users/search?query=wedding&service=photographer&address=BD&minPrice=500&maxPrice=3000&page=1&limit=10",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
                 "search"
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "wedding"
+                },
+                {
+                  "key": "service",
+                  "value": "photographer"
+                },
+                {
+                  "key": "address",
+                  "value": "BD"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "500"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "3000"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Nearby Users (Public)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/users/nearby",
+              "raw": "{{baseUrl}}/users/nearby?lat=40.7128&lng=-74.0080",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
                 "nearby"
+              ],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "40.7128"
+                },
+                {
+                  "key": "lng",
+                  "value": "-74.0080"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get User By Id (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/users/:userId",
               "host": [
@@ -371,14 +494,32 @@
               "path": [
                 "users",
                 ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "69818edb65d93e03a2a80458"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get My Profile (Auth)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/users/profile/me",
               "host": [
@@ -389,33 +530,13 @@
                 "profile",
                 "me"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Profile (Auth)",
           "request": {
-            "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/users/profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "profile"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -426,12 +547,14 @@
                 }
               ]
             },
+            "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
                 {
                   "key": "name",
-                  "value": "John Doe",
+                  "value": "Creative Boy",
                   "type": "text"
                 },
                 {
@@ -441,27 +564,93 @@
                 },
                 {
                   "key": "address",
-                  "value": "Cape Town",
-                  "type": "text"
-                },
-                {
-                  "key": "bio",
-                  "value": "Short bio",
+                  "value": "BD",
                   "type": "text"
                 },
                 {
                   "key": "avatar",
                   "type": "file",
-                  "src": ""
+                  "src": "/C:/Users/bdcalling/Downloads/Apprentice.png"
+                },
+                {
+                  "key": "lat",
+                  "value": "40.7128",
+                  "type": "text",
+                  "uuid": "05e46105-284d-4696-ae6a-3db99e6b92b9"
+                },
+                {
+                  "key": "lng",
+                  "value": "-74.0060",
+                  "type": "text",
+                  "uuid": "a4091535-2992-4be7-a255-ded87a631233"
+                },
+                {
+                  "key": "specialRole",
+                  "value": "Backend Developer",
+                  "type": "text",
+                  "uuid": "b7f10f8e-6607-46d8-8386-c728745c707b"
+                },
+                {
+                  "key": "bio",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "038cc6e7-b15c-4714-8164-cb3fee136c35"
+                },
+                {
+                  "key": "interests",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "8afef86a-0e44-4948-a365-f35859c17e7d"
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "Add Work (Creative)",
+          "name": "Add Work (Client)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "workTitle",
+                  "value": "Brand Photoshoot",
+                  "type": "text"
+                },
+                {
+                  "key": "workImages",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/bdcalling/Downloads/wp8329500.png",
+                    "/C:/Users/bdcalling/Downloads/wp7603672.png",
+                    "/C:/Users/bdcalling/Downloads/Novice.png"
+                  ]
+                }
+              ]
+            },
             "url": {
               "raw": "{{baseUrl}}/users/works",
               "host": [
@@ -471,7 +660,13 @@
                 "users",
                 "works"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Work (Client)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -482,27 +677,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "title",
-                  "value": "Brand Photoshoot",
-                  "type": "text"
-                },
-                {
-                  "key": "workImages",
-                  "type": "file",
-                  "src": ""
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Delete Work (Creative)",
-          "request": {
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/users/works/:workId",
               "host": [
@@ -512,34 +688,20 @@
                 "users",
                 "works",
                 ":workId"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "workId",
+                  "value": "6981963d1214ece9f6d90ad6"
                 }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Add Project (Client)",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/users/projects",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "projects"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -550,6 +712,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -561,21 +725,46 @@
                 {
                   "key": "images",
                   "type": "file",
-                  "src": ""
+                  "src": [
+                    "/C:/Users/bdcalling/Downloads/png-transparent-mongodb-icon-hd-logo-thumbnail.png",
+                    "/C:/Users/bdcalling/Downloads/png-transparent-mongodb-plain-wordmark-logo-icon.png"
+                  ]
                 },
                 {
                   "key": "videos",
                   "type": "file",
-                  "src": ""
+                  "src": "/C:/Users/bdcalling/Downloads/133829-758327963_tiny.mp4"
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/projects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "projects"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Project (Client)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/users/projects/:projectId",
               "host": [
@@ -585,8 +774,20 @@
                 "users",
                 "projects",
                 ":projectId"
+              ],
+              "variable": [
+                {
+                  "key": "projectId",
+                  "value": "69819855724ef11ce274dd25"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Settings (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -596,13 +797,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Update Settings (Auth)",
-          "request": {
+            },
             "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailNotifications\": true,\n  \"pushNotifications\": true,\n  \"chatNotifications\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/users/settings",
               "host": [
@@ -612,7 +818,13 @@
                 "users",
                 "settings"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Account (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -623,21 +835,17 @@
                 }
               ]
             },
+            "method": "DELETE",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"emailNotifications\": true,\n  \"pushNotifications\": true,\n  \"chatNotifications\": true\n}",
+              "raw": "{\n  \"reason\": \"No longer needed\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Delete Account (Auth)",
-          "request": {
-            "method": "DELETE",
+            },
             "url": {
               "raw": "{{baseUrl}}/users/account",
               "host": [
@@ -647,27 +855,9 @@
                 "users",
                 "account"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"reason\": \"No longer needed\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -678,6 +868,7 @@
           "name": "Get All Gigs (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/gigs",
               "host": [
@@ -687,12 +878,14 @@
                 "gigs"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Top Rated Gigs (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/gigs/top-rated",
               "host": [
@@ -703,12 +896,14 @@
                 "top-rated"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Gigs By Creative (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/gigs/creative/:creativeId",
               "host": [
@@ -718,14 +913,22 @@
                 "gigs",
                 "creative",
                 ":creativeId"
+              ],
+              "variable": [
+                {
+                  "key": "creativeId",
+                  "value": "69818edb65d93e03a2a80458"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Gig By Id (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/gigs/:gigId",
               "host": [
@@ -734,23 +937,20 @@
               "path": [
                 "gigs",
                 ":gigId"
+              ],
+              "variable": [
+                {
+                  "key": "gigId",
+                  "value": "69819d3fd8c1d02d4072b792"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Gig (Creative)",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/gigs",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "gigs"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -761,6 +961,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -770,18 +972,18 @@
                   "type": "text"
                 },
                 {
-                  "key": "description",
+                  "key": "about",
                   "value": "Full-day coverage",
                   "type": "text"
                 },
                 {
-                  "key": "price",
+                  "key": "paymentPerHour",
                   "value": "1500",
                   "type": "text"
                 },
                 {
-                  "key": "categoryId",
-                  "value": "CATEGORY_ID",
+                  "key": "category",
+                  "value": "Software Development",
                   "type": "text"
                 },
                 {
@@ -792,21 +994,45 @@
                 {
                   "key": "images",
                   "type": "file",
-                  "src": ""
+                  "src": [
+                    "/C:/Users/bdcalling/Downloads/wp8329500.png",
+                    "/C:/Users/bdcalling/Downloads/wp7603672.png"
+                  ]
                 },
                 {
                   "key": "reels",
                   "type": "file",
-                  "src": ""
+                  "src": "/C:/Users/bdcalling/Downloads/133829-758327963_tiny.mp4"
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/gigs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "gigs"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get My Gigs (Creative)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/gigs/my/gigs",
               "host": [
@@ -817,33 +1043,13 @@
                 "my",
                 "gigs"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Gig (Creative)",
           "request": {
-            "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/gigs/:gigId",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "gigs",
-                ":gigId"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -854,6 +1060,8 @@
                 }
               ]
             },
+            "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -880,21 +1088,57 @@
                 {
                   "key": "images",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 },
                 {
                   "key": "reels",
                   "type": "file",
-                  "src": ""
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/gigs/:gigId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "gigs",
+                ":gigId"
+              ],
+              "variable": [
+                {
+                  "key": "gigId"
                 }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Toggle Gig Active (Creative)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/gigs/:gigId/toggle-active",
               "host": [
@@ -904,8 +1148,20 @@
                 "gigs",
                 ":gigId",
                 "toggle-active"
+              ],
+              "variable": [
+                {
+                  "key": "gigId",
+                  "value": ""
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Gig (Creative)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -916,21 +1172,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"isActive\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Delete Gig (Creative)",
-          "request": {
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/gigs/:gigId",
               "host": [
@@ -939,19 +1182,16 @@
               "path": [
                 "gigs",
                 ":gigId"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "gigId",
+                  "value": ""
                 }
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -962,6 +1202,7 @@
           "name": "Get All Job Posts (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/job-posts",
               "host": [
@@ -971,12 +1212,14 @@
                 "job-posts"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Job Post By Id (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/job-posts/:jobPostId",
               "host": [
@@ -985,14 +1228,40 @@
               "path": [
                 "job-posts",
                 ":jobPostId"
+              ],
+              "variable": [
+                {
+                  "key": "jobPostId"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Apply To Job Post (Creative)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coverLetter\": \"I can do this\",\n  \"proposedBudget\": 1200\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/job-posts/:jobPostId/apply",
               "host": [
@@ -1002,42 +1271,19 @@
                 "job-posts",
                 ":jobPostId",
                 "apply"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "jobPostId"
                 }
               ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"coverLetter\": \"I can do this\",\n  \"proposedBudget\": 1200\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Job Post (Client)",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/job-posts",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "job-posts"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1048,6 +1294,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -1067,28 +1315,62 @@
                   "type": "text"
                 },
                 {
-                  "key": "categoryId",
-                  "value": "CATEGORY_ID",
+                  "key": "service",
+                  "value": "dancer",
                   "type": "text"
                 },
                 {
-                  "key": "deadline",
+                  "key": "date",
                   "value": "2026-02-15",
                   "type": "text"
                 },
                 {
-                  "key": "attachments",
-                  "type": "file",
-                  "src": ""
+                  "key": "time",
+                  "value": "10:00 PM",
+                  "type": "text",
+                  "uuid": "29634a5e-33e7-42d6-a53e-268ebefc4d97"
+                },
+                {
+                  "key": "maxBudget",
+                  "value": "5000",
+                  "type": "text",
+                  "uuid": "171d2a6b-d288-470f-8f1b-78e8580a9749"
+                },
+                {
+                  "key": "minBudget",
+                  "value": "3000",
+                  "type": "text",
+                  "uuid": "7959b559-c67f-44d4-92e1-633eee27eaa0"
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/job-posts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "job-posts"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get My Job Posts (Client)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/job-posts/my/posts",
               "host": [
@@ -1099,7 +1381,13 @@
                 "my",
                 "posts"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pay Premium (Client)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1109,13 +1397,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Pay Premium (Client)",
-          "request": {
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentMethodId\": \"PAYMENT_METHOD_ID\"\n} ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/job-posts/:jobPostId/pay-premium",
               "host": [
@@ -1125,43 +1418,20 @@
                 "job-posts",
                 ":jobPostId",
                 "pay-premium"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "jobPostId",
+                  "value": "699a88a0e07eece1c870221a"
                 }
               ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"paymentMethodId\": \"PAYMENT_METHOD_ID\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Job Post (Client)",
           "request": {
-            "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/job-posts/:jobPostId",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "job-posts",
-                ":jobPostId"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1172,6 +1442,8 @@
                 }
               ]
             },
+            "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -1198,16 +1470,52 @@
                 {
                   "key": "attachments",
                   "type": "file",
-                  "src": ""
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/job-posts/:jobPostId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "job-posts",
+                ":jobPostId"
+              ],
+              "variable": [
+                {
+                  "key": "jobPostId"
                 }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Applicant Status (Client)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/job-posts/:jobPostId/applicants/:applicantId",
               "host": [
@@ -1218,8 +1526,22 @@
                 ":jobPostId",
                 "applicants",
                 ":applicantId"
+              ],
+              "variable": [
+                {
+                  "key": "jobPostId"
+                },
+                {
+                  "key": "applicantId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Close Job Post (Client)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1230,21 +1552,17 @@
                 }
               ]
             },
+            "method": "PATCH",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"accepted\"\n}",
+              "raw": "{\n  \"reason\": \"Filled\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Close Job Post (Client)",
-          "request": {
-            "method": "PATCH",
+            },
             "url": {
               "raw": "{{baseUrl}}/job-posts/:jobPostId/close",
               "host": [
@@ -1254,8 +1572,19 @@
                 "job-posts",
                 ":jobPostId",
                 "close"
+              ],
+              "variable": [
+                {
+                  "key": "jobPostId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job Post (Client)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1266,21 +1595,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"reason\": \"Filled\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Delete Job Post (Client)",
-          "request": {
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/job-posts/:jobPostId",
               "host": [
@@ -1289,19 +1605,15 @@
               "path": [
                 "job-posts",
                 ":jobPostId"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "jobPostId"
                 }
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -1311,7 +1623,27 @@
         {
           "name": "Create Order From Gig (Auth)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requirements\": \"Need 20 photos\",\n  \"scheduleDate\": \"2026-02-10\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/orders/from-gig/:gigId",
               "host": [
@@ -1321,8 +1653,19 @@
                 "orders",
                 "from-gig",
                 ":gigId"
+              ],
+              "variable": [
+                {
+                  "key": "gigId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order From Offer (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1333,21 +1676,17 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requirements\": \"Need 20 photos\",\n  \"scheduleDate\": \"2026-02-10\"\n}",
+              "raw": "{\n  \"message\": \"Accepting offer\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Create Order From Offer (Auth)",
-          "request": {
-            "method": "POST",
+            },
             "url": {
               "raw": "{{baseUrl}}/orders/from-offer/:offerId",
               "host": [
@@ -1357,8 +1696,19 @@
                 "orders",
                 "from-offer",
                 ":offerId"
+              ],
+              "variable": [
+                {
+                  "key": "offerId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Orders (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1369,21 +1719,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"message\": \"Accepting offer\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Get My Orders (Auth)",
-          "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/orders/my-orders",
               "host": [
@@ -1393,7 +1730,13 @@
                 "orders",
                 "my-orders"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order By Id (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1403,13 +1746,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Order By Id (Auth)",
-          "request": {
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/orders/:orderId",
               "host": [
@@ -1418,8 +1757,19 @@
               "path": [
                 "orders",
                 ":orderId"
+              ],
+              "variable": [
+                {
+                  "key": "orderId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request Reschedule (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1429,13 +1779,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Request Reschedule (Auth)",
-          "request": {
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newDate\": \"2026-02-12\",\n  \"note\": \"Change of plans\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/orders/:orderId/reschedule",
               "host": [
@@ -1445,8 +1800,19 @@
                 "orders",
                 ":orderId",
                 "reschedule"
+              ],
+              "variable": [
+                {
+                  "key": "orderId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Respond To Reschedule (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1457,21 +1823,17 @@
                 }
               ]
             },
+            "method": "PATCH",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"newDate\": \"2026-02-12\",\n  \"note\": \"Change of plans\"\n}",
+              "raw": "{\n  \"status\": \"accepted\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Respond To Reschedule (Auth)",
-          "request": {
-            "method": "PATCH",
+            },
             "url": {
               "raw": "{{baseUrl}}/orders/:orderId/reschedule/:requestId",
               "host": [
@@ -1482,8 +1844,22 @@
                 ":orderId",
                 "reschedule",
                 ":requestId"
+              ],
+              "variable": [
+                {
+                  "key": "orderId"
+                },
+                {
+                  "key": "requestId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Order (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1494,21 +1870,17 @@
                 }
               ]
             },
+            "method": "PATCH",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"accepted\"\n}",
+              "raw": "{\n  \"reason\": \"Client cancelled\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Cancel Order (Auth)",
-          "request": {
-            "method": "PATCH",
+            },
             "url": {
               "raw": "{{baseUrl}}/orders/:orderId/cancel",
               "host": [
@@ -1518,8 +1890,19 @@
                 "orders",
                 ":orderId",
                 "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "orderId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Order (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1530,21 +1913,17 @@
                 }
               ]
             },
+            "method": "PATCH",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"reason\": \"Client cancelled\"\n}",
+              "raw": "{\n  \"note\": \"Work delivered\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Complete Order (Auth)",
-          "request": {
-            "method": "PATCH",
+            },
             "url": {
               "raw": "{{baseUrl}}/orders/:orderId/complete",
               "host": [
@@ -1554,28 +1933,15 @@
                 "orders",
                 ":orderId",
                 "complete"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "orderId"
                 }
               ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"note\": \"Work delivered\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -1585,19 +1951,6 @@
         {
           "name": "Submit Draft (Creative)",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/drafts/orders/:orderId/drafts",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "drafts",
-                "orders",
-                ":orderId",
-                "drafts"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1608,6 +1961,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -1619,16 +1974,10 @@
                 {
                   "key": "files",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Order Drafts (Auth)",
-          "request": {
-            "method": "GET",
+            },
             "url": {
               "raw": "{{baseUrl}}/drafts/orders/:orderId/drafts",
               "host": [
@@ -1639,8 +1988,19 @@
                 "orders",
                 ":orderId",
                 "drafts"
+              ],
+              "variable": [
+                {
+                  "key": "orderId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Drafts (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1650,13 +2010,44 @@
                   "type": "string"
                 }
               ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/drafts/orders/:orderId/drafts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "drafts",
+                "orders",
+                ":orderId",
+                "drafts"
+              ],
+              "variable": [
+                {
+                  "key": "orderId"
+                }
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Draft By Id (Auth)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/drafts/:draftId",
               "host": [
@@ -1665,8 +2056,19 @@
               "path": [
                 "drafts",
                 ":draftId"
+              ],
+              "variable": [
+                {
+                  "key": "draftId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Draft (Client)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1676,13 +2078,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Approve Draft (Client)",
-          "request": {
+            },
             "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Looks good\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/drafts/:draftId/approve",
               "host": [
@@ -1692,8 +2099,19 @@
                 "drafts",
                 ":draftId",
                 "approve"
+              ],
+              "variable": [
+                {
+                  "key": "draftId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request Revision (Client)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1704,21 +2122,17 @@
                 }
               ]
             },
+            "method": "PATCH",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"message\": \"Looks good\"\n}",
+              "raw": "{\n  \"message\": \"Please adjust colors\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Request Revision (Client)",
-          "request": {
-            "method": "PATCH",
+            },
             "url": {
               "raw": "{{baseUrl}}/drafts/:draftId/request-revision",
               "host": [
@@ -1728,8 +2142,19 @@
                 "drafts",
                 ":draftId",
                 "request-revision"
+              ],
+              "variable": [
+                {
+                  "key": "draftId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Draft (Client)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1740,21 +2165,17 @@
                 }
               ]
             },
+            "method": "PATCH",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"message\": \"Please adjust colors\"\n}",
+              "raw": "{\n  \"message\": \"Not aligned\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Reject Draft (Client)",
-          "request": {
-            "method": "PATCH",
+            },
             "url": {
               "raw": "{{baseUrl}}/drafts/:draftId/reject",
               "host": [
@@ -1764,8 +2185,19 @@
                 "drafts",
                 ":draftId",
                 "reject"
+              ],
+              "variable": [
+                {
+                  "key": "draftId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Draft (Creative)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1776,21 +2208,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"message\": \"Not aligned\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Delete Draft (Creative)",
-          "request": {
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/drafts/:draftId",
               "host": [
@@ -1799,19 +2218,15 @@
               "path": [
                 "drafts",
                 ":draftId"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "draftId"
                 }
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -1822,6 +2237,7 @@
           "name": "Get Creative Reviews (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/reviews/users/:creativeId",
               "host": [
@@ -1831,14 +2247,21 @@
                 "reviews",
                 "users",
                 ":creativeId"
+              ],
+              "variable": [
+                {
+                  "key": "creativeId"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Gig Reviews (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/reviews/gigs/:gigId",
               "host": [
@@ -1848,14 +2271,40 @@
                 "reviews",
                 "gigs",
                 ":gigId"
+              ],
+              "variable": [
+                {
+                  "key": "gigId"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Review (Client)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Great work\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/reviews/orders/:orderId",
               "host": [
@@ -1865,8 +2314,19 @@
                 "reviews",
                 "orders",
                 ":orderId"
+              ],
+              "variable": [
+                {
+                  "key": "orderId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Review (Creative)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1877,21 +2337,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Great work\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Delete Review (Creative)",
-          "request": {
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/reviews/:reviewId",
               "host": [
@@ -1900,19 +2347,15 @@
               "path": [
                 "reviews",
                 ":reviewId"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "reviewId"
                 }
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -1922,16 +2365,6 @@
         {
           "name": "Get Notifications (Auth)",
           "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/notifications",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "notifications"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1941,13 +2374,36 @@
                   "type": "string"
                 }
               ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Unread Count (Auth)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/notifications/unread-count",
               "host": [
@@ -1957,7 +2413,13 @@
                 "notifications",
                 "unread-count"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark As Read (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1967,13 +2429,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Mark As Read (Auth)",
-          "request": {
+            },
             "method": "PATCH",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/notifications/:notificationId/read",
               "host": [
@@ -1983,8 +2441,19 @@
                 "notifications",
                 ":notificationId",
                 "read"
+              ],
+              "variable": [
+                {
+                  "key": "notificationId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark All As Read (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1994,13 +2463,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Mark All As Read (Auth)",
-          "request": {
+            },
             "method": "PATCH",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/notifications/read-all",
               "host": [
@@ -2010,7 +2475,13 @@
                 "notifications",
                 "read-all"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2020,13 +2491,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Delete Notification (Auth)",
-          "request": {
+            },
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/notifications/:notificationId",
               "host": [
@@ -2035,8 +2502,19 @@
               "path": [
                 "notifications",
                 ":notificationId"
+              ],
+              "variable": [
+                {
+                  "key": "notificationId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear All Notifications (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2046,13 +2524,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Clear All Notifications (Auth)",
-          "request": {
+            },
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/notifications/clear-all",
               "host": [
@@ -2062,18 +2536,9 @@
                 "notifications",
                 "clear-all"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -2083,7 +2548,27 @@
         {
           "name": "Toggle Like (Auth)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetId\": \"TARGET_ID\",\n  \"targetType\": \"gig\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/social/like",
               "host": [
@@ -2093,7 +2578,13 @@
                 "social",
                 "like"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Likes (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2104,21 +2595,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"targetId\": \"TARGET_ID\",\n  \"targetType\": \"gig\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Get My Likes (Auth)",
-          "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/social/my-likes",
               "host": [
@@ -2128,7 +2606,13 @@
                 "social",
                 "my-likes"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Likers (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2138,13 +2622,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get User Likers (Auth)",
-          "request": {
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/social/users/:userId/likers",
               "host": [
@@ -2155,8 +2635,19 @@
                 "users",
                 ":userId",
                 "likers"
+              ],
+              "variable": [
+                {
+                  "key": "userId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Block User (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2166,13 +2657,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Block User (Auth)",
-          "request": {
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetUserId\": \"USER_ID\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/social/block",
               "host": [
@@ -2182,7 +2678,13 @@
                 "social",
                 "block"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unblock User (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2193,21 +2695,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"targetUserId\": \"USER_ID\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Unblock User (Auth)",
-          "request": {
             "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/social/block/:targetUserId",
               "host": [
@@ -2217,8 +2706,19 @@
                 "social",
                 "block",
                 ":targetUserId"
+              ],
+              "variable": [
+                {
+                  "key": "targetUserId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Blocked Users (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2228,13 +2728,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Blocked Users (Auth)",
-          "request": {
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/social/blocked-users",
               "host": [
@@ -2244,33 +2740,13 @@
                 "social",
                 "blocked-users"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Report User (Auth)",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/social/report",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "social",
-                "report"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2281,6 +2757,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -2297,16 +2775,38 @@
                 {
                   "key": "evidence",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/social/report",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "report"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get My Reports (Auth)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/social/my-reports",
               "host": [
@@ -2315,6 +2815,75 @@
               "path": [
                 "social",
                 "my-reports"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Dislikes (Auth)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/social/my-dislikes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "my-dislikes"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Creative Reactions (Auth)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/social/my-creative-reactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "my-creative-reactions"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Received Reactions (Creative Auth)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/social/my-received-reactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "my-received-reactions"
               ]
             },
             "auth": {
@@ -2338,6 +2907,7 @@
           "name": "Get Creative Portfolio (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/portfolios/creative/:creativeId",
               "host": [
@@ -2347,14 +2917,21 @@
                 "portfolios",
                 "creative",
                 ":creativeId"
+              ],
+              "variable": [
+                {
+                  "key": "creativeId"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Portfolio By Id (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/portfolios/:portfolioId",
               "host": [
@@ -2363,14 +2940,59 @@
               "path": [
                 "portfolios",
                 ":portfolioId"
+              ],
+              "variable": [
+                {
+                  "key": "portfolioId",
+                  "value": "698408389be51c52f063c895"
+                }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Portfolio (Creative)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "description",
+                  "value": "Lifestyle Collection",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "/C:/Users/bdcalling/Downloads/Novice.png"
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "true",
+                  "type": "text",
+                  "uuid": "da002b51-56cf-409a-b103-dfa8d765639e"
+                },
+                {
+                  "key": "tags",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "98379f21-ab61-4eff-b99d-64e60a5fd2c6"
+                }
+              ]
+            },
             "url": {
               "raw": "{{baseUrl}}/portfolios",
               "host": [
@@ -2379,58 +3001,13 @@
               "path": [
                 "portfolios"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "title",
-                  "value": "Lifestyle Collection",
-                  "type": "text"
-                },
-                {
-                  "key": "description",
-                  "value": "My best work",
-                  "type": "text"
-                },
-                {
-                  "key": "images",
-                  "type": "file",
-                  "src": ""
-                },
-                {
-                  "key": "videos",
-                  "type": "file",
-                  "src": ""
-                }
-              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Portfolio (Creative)",
           "request": {
-            "method": "PUT",
-            "url": {
-              "raw": "{{baseUrl}}/portfolios/:portfolioId",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "portfolios",
-                ":portfolioId"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2441,14 +3018,11 @@
                 }
               ]
             },
+            "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "title",
-                  "value": "Lifestyle Collection",
-                  "type": "text"
-                },
                 {
                   "key": "description",
                   "value": "Updated",
@@ -2457,21 +3031,22 @@
                 {
                   "key": "images",
                   "type": "file",
-                  "src": ""
+                  "src": "/C:/Users/bdcalling/Downloads/Seer.png"
                 },
                 {
-                  "key": "videos",
-                  "type": "file",
-                  "src": ""
+                  "key": "isFeatured",
+                  "value": "true",
+                  "type": "text",
+                  "uuid": "eef8b826-def5-4b22-8863-e76cb5072b67"
+                },
+                {
+                  "key": "tags",
+                  "value": "Wear",
+                  "type": "text",
+                  "uuid": "1f108a74-7422-4834-95f1-e0c466001551"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Delete Portfolio (Creative)",
-          "request": {
-            "method": "DELETE",
+            },
             "url": {
               "raw": "{{baseUrl}}/portfolios/:portfolioId",
               "host": [
@@ -2480,8 +3055,20 @@
               "path": [
                 "portfolios",
                 ":portfolioId"
+              ],
+              "variable": [
+                {
+                  "key": "portfolioId",
+                  "value": "698408389be51c52f063c895"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Portfolio (Creative)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2491,8 +3078,26 @@
                   "type": "string"
                 }
               ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/portfolios/:portfolioId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portfolios",
+                ":portfolioId"
+              ],
+              "variable": [
+                {
+                  "key": "portfolioId"
+                }
+              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -2502,7 +3107,18 @@
         {
           "name": "Dashboard Overview (Admin)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/admin/dashboard",
               "host": [
@@ -2512,7 +3128,13 @@
                 "admin",
                 "dashboard"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2522,13 +3144,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get All Users (Admin)",
-          "request": {
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/admin/users",
               "host": [
@@ -2538,7 +3156,13 @@
                 "admin",
                 "users"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle User Status (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2548,13 +3172,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Toggle User Status (Admin)",
-          "request": {
+            },
             "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/admin/users/:userId/toggle-status",
               "host": [
@@ -2565,8 +3194,19 @@
                 "users",
                 ":userId",
                 "toggle-status"
+              ],
+              "variable": [
+                {
+                  "key": "userId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Revenue Stats (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2577,21 +3217,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"approved\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Get Revenue Stats (Admin)",
-          "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/admin/revenue",
               "host": [
@@ -2601,7 +3228,13 @@
                 "admin",
                 "revenue"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment History (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2611,13 +3244,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Payment History (Admin)",
-          "request": {
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/admin/payments",
               "host": [
@@ -2627,7 +3256,13 @@
                 "admin",
                 "payments"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Payment (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2637,13 +3272,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Approve Payment (Admin)",
-          "request": {
+            },
             "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/admin/payments/:transactionId/approve",
               "host": [
@@ -2654,8 +3294,19 @@
                 "payments",
                 ":transactionId",
                 "approve"
+              ],
+              "variable": [
+                {
+                  "key": "transactionId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Verification Requests (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2666,21 +3317,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"approved\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Get Verification Requests (Admin)",
-          "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/admin/verifications",
               "host": [
@@ -2690,7 +3328,13 @@
                 "admin",
                 "verifications"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review Verification (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2700,13 +3344,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Review Verification (Admin)",
-          "request": {
+            },
             "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\",\n  \"notes\": \"Looks good\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/admin/verifications/:verificationId",
               "host": [
@@ -2716,8 +3365,19 @@
                 "admin",
                 "verifications",
                 ":verificationId"
+              ],
+              "variable": [
+                {
+                  "key": "verificationId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Reports (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2728,21 +3388,8 @@
                 }
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"approved\",\n  \"notes\": \"Looks good\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Get All Reports (Admin)",
-          "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/admin/reports",
               "host": [
@@ -2752,7 +3399,13 @@
                 "admin",
                 "reports"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review Report (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2762,13 +3415,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Review Report (Admin)",
-          "request": {
+            },
             "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"resolved\",\n  \"notes\": \"Handled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/admin/reports/:reportId",
               "host": [
@@ -2778,28 +3436,15 @@
                 "admin",
                 "reports",
                 ":reportId"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "reportId"
                 }
               ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"resolved\",\n  \"notes\": \"Handled\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -2810,6 +3455,7 @@
           "name": "Get All Categories (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/categories",
               "host": [
@@ -2819,12 +3465,14 @@
                 "categories"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Category By Id (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/categories/:categoryId",
               "host": [
@@ -2833,9 +3481,15 @@
               "path": [
                 "categories",
                 ":categoryId"
+              ],
+              "variable": [
+                {
+                  "key": "categoryId"
+                }
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -2845,17 +3499,6 @@
         {
           "name": "Request Verification (Creative)",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/verifications/request",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "verifications",
-                "request"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2866,6 +3509,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -2877,16 +3522,38 @@
                 {
                   "key": "documents",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/verifications/request",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "verifications",
+                "request"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Verification Status (Creative)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/verifications/my-status",
               "host": [
@@ -2896,18 +3563,9 @@
                 "verifications",
                 "my-status"
               ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -2917,17 +3575,6 @@
         {
           "name": "Create Support Ticket (Auth)",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/support/tickets",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "support",
-                "tickets"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2938,6 +3585,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -2954,16 +3603,38 @@
                 {
                   "key": "attachments",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/support/tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "support",
+                "tickets"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get My Tickets (Auth)",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/support/my-tickets",
               "host": [
@@ -2973,7 +3644,13 @@
                 "support",
                 "my-tickets"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ticket By Id (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -2983,13 +3660,9 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Ticket By Id (Auth)",
-          "request": {
+            },
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/support/tickets/:ticketId",
               "host": [
@@ -2999,8 +3672,19 @@
                 "support",
                 "tickets",
                 ":ticketId"
+              ],
+              "variable": [
+                {
+                  "key": "ticketId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rate Ticket (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3010,13 +3694,18 @@
                   "type": "string"
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Rate Ticket (Auth)",
-          "request": {
+            },
             "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"feedback\": \"Resolved quickly\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/support/tickets/:ticketId/rate",
               "host": [
@@ -3027,8 +3716,19 @@
                 "tickets",
                 ":ticketId",
                 "rate"
+              ],
+              "variable": [
+                {
+                  "key": "ticketId"
+                }
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Ticket Status (Admin)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3039,21 +3739,17 @@
                 }
               ]
             },
+            "method": "PATCH",
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"rating\": 5,\n  \"feedback\": \"Resolved quickly\"\n}",
+              "raw": "{\n  \"status\": \"closed\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          }
-        },
-        {
-          "name": "Update Ticket Status (Admin)",
-          "request": {
-            "method": "PATCH",
+            },
             "url": {
               "raw": "{{baseUrl}}/support/tickets/:ticketId/status",
               "host": [
@@ -3064,28 +3760,15 @@
                 "tickets",
                 ":ticketId",
                 "status"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+              ],
+              "variable": [
                 {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
+                  "key": "ticketId"
                 }
               ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"closed\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -3096,6 +3779,7 @@
           "name": "Get Website Content (Public)",
           "request": {
             "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/website",
               "host": [
@@ -3105,22 +3789,12 @@
                 "website"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Hero Section (Auth)",
           "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/website/hero",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "website",
-                "hero"
-              ]
-            },
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3131,6 +3805,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -3147,16 +3823,10 @@
                 {
                   "key": "image",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Update Hero Section (Auth)",
-          "request": {
-            "method": "PUT",
+            },
             "url": {
               "raw": "{{baseUrl}}/website/hero",
               "host": [
@@ -3166,7 +3836,13 @@
                 "website",
                 "hero"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Hero Section (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3177,6 +3853,8 @@
                 }
               ]
             },
+            "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -3193,16 +3871,10 @@
                 {
                   "key": "image",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Hero Section (Public)",
-          "request": {
-            "method": "GET",
+            },
             "url": {
               "raw": "{{baseUrl}}/website/hero",
               "host": [
@@ -3213,22 +3885,30 @@
                 "hero"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "Create About Section (Auth)",
+          "name": "Get Hero Section (Public)",
           "request": {
-            "method": "POST",
+            "method": "GET",
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/website/about",
+              "raw": "{{baseUrl}}/website/hero",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "website",
-                "about"
+                "hero"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create About Section (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3239,6 +3919,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -3255,16 +3937,10 @@
                 {
                   "key": "image",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Update About Section (Auth)",
-          "request": {
-            "method": "PUT",
+            },
             "url": {
               "raw": "{{baseUrl}}/website/about",
               "host": [
@@ -3274,7 +3950,13 @@
                 "website",
                 "about"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update About Section (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3285,6 +3967,8 @@
                 }
               ]
             },
+            "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -3301,16 +3985,10 @@
                 {
                   "key": "image",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get About Section (Public)",
-          "request": {
-            "method": "GET",
+            },
             "url": {
               "raw": "{{baseUrl}}/website/about",
               "host": [
@@ -3321,22 +3999,30 @@
                 "about"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "Create Creative Section (Auth)",
+          "name": "Get About Section (Public)",
           "request": {
-            "method": "POST",
+            "method": "GET",
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/website/creative",
+              "raw": "{{baseUrl}}/website/about",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "website",
-                "creative"
+                "about"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Creative Section (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3347,6 +4033,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -3363,21 +4051,15 @@
                 {
                   "key": "heroImage",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 },
                 {
                   "key": "images",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Update Creative Section (Auth)",
-          "request": {
-            "method": "PUT",
+            },
             "url": {
               "raw": "{{baseUrl}}/website/creative",
               "host": [
@@ -3387,7 +4069,13 @@
                 "website",
                 "creative"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Creative Section (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3398,6 +4086,8 @@
                 }
               ]
             },
+            "method": "PUT",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -3414,21 +4104,15 @@
                 {
                   "key": "heroImage",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 },
                 {
                   "key": "images",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Creative Section (Public)",
-          "request": {
-            "method": "GET",
+            },
             "url": {
               "raw": "{{baseUrl}}/website/creative",
               "host": [
@@ -3439,22 +4123,30 @@
                 "creative"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
-          "name": "Create Client Section (Auth)",
+          "name": "Get Creative Section (Public)",
           "request": {
-            "method": "POST",
+            "method": "GET",
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/website/client",
+              "raw": "{{baseUrl}}/website/creative",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "website",
-                "client"
+                "creative"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Client Section (Auth)",
+          "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -3465,6 +4157,8 @@
                 }
               ]
             },
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -3481,16 +4175,10 @@
                 {
                   "key": "image",
                   "type": "file",
-                  "src": ""
+                  "value": ""
                 }
               ]
-            }
-          }
-        },
-        {
-          "name": "Update Client Section (Auth)",
-          "request": {
-            "method": "PUT",
+            },
             "url": {
               "raw": "{{baseUrl}}/website/client",
               "host": [
@@ -3499,6 +4187,496 @@
               "path": [
                 "website",
                 "client"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Client Section (Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Clients",
+                  "type": "text"
+                },
+                {
+                  "key": "content",
+                  "value": "Updated",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/client",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "client"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Client Section (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/website/client",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "client"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Contact Section (Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"support@example.com\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"Main Street\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/contact",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "contact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Contact Section (Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"support@example.com\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"Main Street\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/website/contact",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "contact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Contact Section (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/website/contact",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "contact"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "item": [
+        {
+          "name": "Create Chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participants\": [\"65f1a2b3c4d5e6f789012345\"],\n  \"chatType\": \"direct\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Chats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/{{chatId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "{{chatId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Chat",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isBlocked\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/{{chatId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "{{chatId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Block Chat",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/{{chatId}}/block",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "{{chatId}}",
+                "block"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Message",
+      "item": [
+        {
+          "name": "Send Message (Text)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"chatId\": \"{{chatId}}\",\n  \"content\": \"Hello, this is test message\",\n  \"messageType\": \"text\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/message",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "message"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Message (Media)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"chatId\": \"{{chatId}}\",\n  \"messageType\": \"image\",\n  \"media\": [\n    {\n      \"public_id\": \"chat/image1\",\n      \"url\": \"https://example.com/image.jpg\",\n      \"fileType\": \"image\",\n      \"fileName\": \"image.jpg\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/message",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "message"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Messages by Chat ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/message/{{chatId}}?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "message",
+                "{{chatId}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Message",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated message content\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/message/{{messageId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "message",
+                "{{messageId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Message",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/message/{{messageId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "message",
+                "{{messageId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Message as Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/message/{{messageId}}/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "message",
+                "{{messageId}}",
+                "read"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reels",
+      "item": [
+        {
+          "name": "Create Reels (Creative Auth)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/reels",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels"
               ]
             },
             "auth": {
@@ -3516,51 +4694,98 @@
               "formdata": [
                 {
                   "key": "title",
-                  "value": "Clients",
+                  "value": "My latest reel set",
                   "type": "text"
                 },
                 {
-                  "key": "content",
-                  "value": "Updated",
+                  "key": "tags",
+                  "value": "fashion,portrait",
                   "type": "text"
                 },
                 {
-                  "key": "image",
-                  "type": "file",
-                  "src": ""
+                  "key": "reels",
+                  "src": "",
+                  "type": "file"
                 }
               ]
             }
           }
         },
         {
-          "name": "Get Client Section (Public)",
+          "name": "Get All Reels (Public)",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/website/client",
+              "raw": "{{baseUrl}}/reels?page=1&limit=20",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "website",
-                "client"
+                "reels"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Get Reel By ID (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reels/:reelId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels",
+                ":reelId"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Get My Reels (Creative Auth)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reels/my-reels",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels",
+                "my-reels"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
               ]
             }
           }
         },
         {
-          "name": "Create Contact Section (Auth)",
+          "name": "Update Reel (Creative Auth)",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "url": {
-              "raw": "{{baseUrl}}/website/contact",
+              "raw": "{{baseUrl}}/reels/:reelId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "website",
-                "contact"
+                "reels",
+                ":reelId"
               ]
             },
             "auth": {
@@ -3574,28 +4799,39 @@
               ]
             },
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"support@example.com\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"Main Street\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Updated title",
+                  "type": "text"
+                },
+                {
+                  "key": "tags",
+                  "value": "brand,video",
+                  "type": "text"
+                },
+                {
+                  "key": "reels",
+                  "src": "",
+                  "type": "file"
                 }
-              }
+              ]
             }
           }
         },
         {
-          "name": "Update Contact Section (Auth)",
+          "name": "Delete Reel (Creative Auth)",
           "request": {
-            "method": "PUT",
+            "method": "DELETE",
             "url": {
-              "raw": "{{baseUrl}}/website/contact",
+              "raw": "{{baseUrl}}/reels/:reelId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "website",
-                "contact"
+                "reels",
+                ":reelId"
               ]
             },
             "auth": {
@@ -3606,36 +4842,25 @@
                   "value": "{{accessToken}}",
                   "type": "string"
                 }
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"support@example.com\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"Main Street\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "Get Contact Section (Public)",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/website/contact",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "website",
-                "contact"
               ]
             }
           }
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "serverUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1"
+    },
+    {
+      "key": "accessToken",
+      "value": "REPLACE_ME"
     }
   ]
 }

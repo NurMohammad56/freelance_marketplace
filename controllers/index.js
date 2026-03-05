@@ -35,3 +35,6 @@ export * from "./admin.controller.js";
 export * from "./misc.controller.js";
 
 export * from "./website.controller.js";
+
+// Reels Management
+export * from "./reels.controller.js";

@@ -6,6 +6,7 @@ import {
   resendOTP,
   refreshAccessToken,
   forgotPassword,
+  verifyForgotPasswordOTP,
   resetPassword,
   logout,
   changePassword,
@@ -19,6 +20,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/refresh-token", refreshAccessToken);
 router.post("/forgot-password", forgotPassword);
+router.post("/verify-reset-otp", verifyForgotPasswordOTP);
 router.post("/reset-password", resetPassword);
 
 // Protected routes

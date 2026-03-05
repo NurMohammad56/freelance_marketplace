@@ -17,3 +17,4 @@ export { Category } from "./category.model.js";
 export { Website } from "./website.model.js";
 export { Draft } from "./draft.model.js";
 export { User } from "./user.model.js";
+export { Reel } from "./reels.model.js";

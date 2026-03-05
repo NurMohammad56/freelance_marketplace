@@ -35,10 +35,15 @@
         {
           "name": "Register",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -46,18 +51,28 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
           }
         },
         {
           "name": "Login",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -65,18 +80,28 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           }
         },
         {
           "name": "Verify OTP",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -84,46 +109,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/verify",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "verify"]
-            }
-          }
-        },
-        {
-          "name": "Forget Password",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/forget",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "forget"]
-            }
-          }
-        },
-        {
-          "name": "Reset Password",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"\",\n  \"otp\": \"\",\n  \"password\": \"\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/reset-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "reset-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify"
+              ]
             }
           }
         },
@@ -132,7 +124,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -140,18 +135,28 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/change-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "change-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
             }
           }
         },
         {
           "name": "Refresh Token",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -159,8 +164,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/refresh-token",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "refresh-token"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh-token"
+              ]
             }
           }
         },
@@ -170,8 +180,115 @@
             "method": "POST",
             "url": {
               "raw": "{{baseUrl}}/auth/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "logout"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Verify Reset OTP",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-reset-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-reset-otp"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"newPassword\": \"NewPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           }
         }
@@ -186,8 +303,12 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
@@ -199,22 +320,67 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "", "type": "text" },
-                { "key": "bio", "value": "", "type": "text" },
-                { "key": "interests", "value": "", "type": "text" },
-                { "key": "lng", "value": "", "type": "text" },
-                { "key": "lat", "value": "", "type": "text" },
-                { "key": "addWork", "value": "false", "type": "text" },
-                { "key": "workTitle", "value": "", "type": "text" },
-                { "key": "avatar", "src": "", "type": "file" },
-                { "key": "workImages", "src": "", "type": "file" },
-                { "key": "projects", "src": "", "type": "file" }
+                {
+                  "key": "name",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bio",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "interests",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "lng",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "lat",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "addWork",
+                  "value": "false",
+                  "type": "text"
+                },
+                {
+                  "key": "workTitle",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "avatar",
+                  "src": "",
+                  "type": "file"
+                },
+                {
+                  "key": "workImages",
+                  "src": "",
+                  "type": "file"
+                },
+                {
+                  "key": "projects",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/users/update-profile",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "update-profile"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "update-profile"
+              ]
             }
           }
         },
@@ -223,7 +389,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -231,8 +400,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/change-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "change-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "change-password"
+              ]
             }
           }
         }
@@ -248,18 +422,46 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "about", "value": "", "type": "text" },
-                { "key": "paymentPerHour", "value": "", "type": "text" },
-                { "key": "completedProgramCreative", "value": "", "type": "text" },
-                { "key": "images", "src": "", "type": "file" },
-                { "key": "reels", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "about",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "paymentPerHour",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "completedProgramCreative",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "src": "",
+                  "type": "file"
+                },
+                {
+                  "key": "reels",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/gigs",
-              "host": ["{{baseUrl}}"],
-              "path": ["gigs"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "gigs"
+              ]
             }
           }
         },
@@ -269,8 +471,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/gigs/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["gigs", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "gigs",
+                "me"
+              ]
             }
           }
         },
@@ -280,12 +487,25 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/gigs",
-              "host": ["{{baseUrl}}"],
-              "path": ["gigs"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "gigs"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" },
-                { "key": "q", "value": "" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "q",
+                  "value": ""
+                }
               ]
             }
           }
@@ -295,7 +515,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -303,8 +526,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/gigs/:gigId",
-              "host": ["{{baseUrl}}"],
-              "path": ["gigs", ":gigId"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "gigs",
+                ":gigId"
+              ]
             }
           }
         },
@@ -314,8 +542,13 @@
             "method": "DELETE",
             "url": {
               "raw": "{{baseUrl}}/gigs/:gigId",
-              "host": ["{{baseUrl}}"],
-              "path": ["gigs", ":gigId"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "gigs",
+                ":gigId"
+              ]
             }
           }
         }
@@ -327,12 +560,18 @@
         {
           "name": "Get All Content",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/website",
-              "host": ["{{baseUrl}}"],
-              "path": ["website"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website"
+              ]
             }
           }
         },
@@ -343,15 +582,32 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "bodyText", "value": "", "type": "text" },
-                { "key": "image", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyText",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/website/hero",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "hero"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "hero"
+              ]
             }
           }
         },
@@ -362,27 +618,51 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "bodyText", "value": "", "type": "text" },
-                { "key": "image", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyText",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/website/hero",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "hero"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "hero"
+              ]
             }
           }
         },
         {
           "name": "Get Hero",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/website/hero",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "hero"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "hero"
+              ]
             }
           }
         },
@@ -393,15 +673,32 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "bodyText", "value": "", "type": "text" },
-                { "key": "image", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyText",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/website/about",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "about"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "about"
+              ]
             }
           }
         },
@@ -412,27 +709,51 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "bodyText", "value": "", "type": "text" },
-                { "key": "image", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyText",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/website/about",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "about"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "about"
+              ]
             }
           }
         },
         {
           "name": "Get About",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/website/about",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "about"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "about"
+              ]
             }
           }
         },
@@ -443,16 +764,37 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "bodyText", "value": "", "type": "text" },
-                { "key": "heroImage", "src": "", "type": "file" },
-                { "key": "images", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyText",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "heroImage",
+                  "src": "",
+                  "type": "file"
+                },
+                {
+                  "key": "images",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/website/creative",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "creative"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "creative"
+              ]
             }
           }
         },
@@ -463,28 +805,56 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "bodyText", "value": "", "type": "text" },
-                { "key": "heroImage", "src": "", "type": "file" },
-                { "key": "images", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyText",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "heroImage",
+                  "src": "",
+                  "type": "file"
+                },
+                {
+                  "key": "images",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/website/creative",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "creative"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "creative"
+              ]
             }
           }
         },
         {
           "name": "Get Creative",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/website/creative",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "creative"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "creative"
+              ]
             }
           }
         },
@@ -495,15 +865,32 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "bodyText", "value": "", "type": "text" },
-                { "key": "image", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyText",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/website/client",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "client"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "client"
+              ]
             }
           }
         },
@@ -514,27 +901,51 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "title", "value": "", "type": "text" },
-                { "key": "bodyText", "value": "", "type": "text" },
-                { "key": "image", "src": "", "type": "file" }
+                {
+                  "key": "title",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "bodyText",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "src": "",
+                  "type": "file"
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/website/client",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "client"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "client"
+              ]
             }
           }
         },
         {
           "name": "Get Client",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/website/client",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "client"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "client"
+              ]
             }
           }
         },
@@ -543,7 +954,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -551,8 +965,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/website/contact",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "contact"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "contact"
+              ]
             }
           }
         },
@@ -561,7 +980,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -569,20 +991,300 @@
             },
             "url": {
               "raw": "{{baseUrl}}/website/contact",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "contact"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "contact"
+              ]
             }
           }
         },
         {
           "name": "Get Contact",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/website/contact",
-              "host": ["{{baseUrl}}"],
-              "path": ["website", "contact"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "website",
+                "contact"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Social",
+      "item": [
+        {
+          "name": "Get My Dislikes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/social/my-dislikes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "my-dislikes"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Creative Reactions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/social/my-creative-reactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "my-creative-reactions"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Received Reactions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/social/my-received-reactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "my-received-reactions"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reels",
+      "item": [
+        {
+          "name": "Create Reels (Creative Auth)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/reels",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "My latest reel set",
+                  "type": "text"
+                },
+                {
+                  "key": "tags",
+                  "value": "fashion,portrait",
+                  "type": "text"
+                },
+                {
+                  "key": "reels",
+                  "src": "",
+                  "type": "file"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Reels (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reels?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Get Reel By ID (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reels/:reelId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels",
+                ":reelId"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Get My Reels (Creative Auth)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reels/my-reels",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels",
+                "my-reels"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Reel (Creative Auth)",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/reels/:reelId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels",
+                ":reelId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Updated title",
+                  "type": "text"
+                },
+                {
+                  "key": "tags",
+                  "value": "brand,video",
+                  "type": "text"
+                },
+                {
+                  "key": "reels",
+                  "src": "",
+                  "type": "file"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Reel (Creative Auth)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/reels/:reelId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reels",
+                ":reelId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
             }
           }
         }
