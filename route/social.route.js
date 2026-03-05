@@ -2,6 +2,9 @@ import express from "express";
 import {
   toggleLike,
   getMyLikes,
+  getMyDislikes,
+  getMyCreativeReactions,
+  getMyReceivedReactions,
   getUserLikers,
   blockUser,
   unblockUser,
@@ -20,6 +23,9 @@ router.use(protect);
 // Like/Dislike routes
 router.post("/like", toggleLike);
 router.get("/my-likes", getMyLikes);
+router.get("/my-dislikes", getMyDislikes);
+router.get("/my-creative-reactions", getMyCreativeReactions);
+router.get("/my-received-reactions", getMyReceivedReactions);
 router.get("/users/:userId/likers", getUserLikers);
 
 // Block routes

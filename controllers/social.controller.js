@@ -9,6 +9,21 @@ import sendResponse from "../utils/sendResponse.js";
 import catchAsync from "../utils/catchAsync.js";
 
 // ============ LIKE/DISLIKE FUNCTIONALITY ============
+const VALID_REACTION_ROLES = ["admin", "client", "creative"];
+
+const parseReactionRole = (roleValue) => {
+  if (!roleValue) return null;
+
+  const normalizedRole = roleValue.toString().trim().toLowerCase();
+  if (!VALID_REACTION_ROLES.includes(normalizedRole)) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Invalid role filter. Allowed: admin, client, creative",
+    );
+  }
+
+  return normalizedRole;
+};
 
 // @desc    Toggle like/dislike
 // @route   POST /api/social/like
@@ -109,6 +124,174 @@ export const getMyLikes = catchAsync(async (req, res, next) => {
         total,
         limit: Number(limit),
       },
+    },
+  });
+});
+
+// @desc    Get user's dislikes
+// @route   GET /api/social/my-dislikes
+// @access  Private
+export const getMyDislikes = catchAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { page = 1, limit = 20 } = req.query;
+
+  const query = {
+    liker: userId,
+    likeType: "dislike",
+    isDeleted: false,
+  };
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const dislikes = await Like.find(query)
+    .populate("liked", "name email role profileImage bio isVerified")
+    .skip(skip)
+    .limit(Number(limit))
+    .sort({ createdAt: -1 });
+
+  const total = await Like.countDocuments(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Dislikes retrieved successfully",
+    data: {
+      dislikes,
+      pagination: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(total / Number(limit)),
+        total,
+        limit: Number(limit),
+      },
+    },
+  });
+});
+
+// @desc    Get my likes and dislikes for creative users
+// @route   GET /api/social/my-creative-reactions
+// @access  Private
+export const getMyCreativeReactions = catchAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const requestedTargetRole = parseReactionRole(req.query.targetRole);
+  const targetRole =
+    requestedTargetRole || (req.user.role === "client" ? "creative" : null);
+
+  const populateMatch = {
+    isDeleted: false,
+    ...(targetRole ? { role: targetRole } : {}),
+  };
+
+  const reactions = await Like.find({
+    liker: userId,
+    targetType: "user",
+    isDeleted: false,
+  })
+    .populate({
+      path: "liked",
+      select: "name email role profileImage bio isVerified specialRole",
+      match: populateMatch,
+    })
+    .sort({ createdAt: -1 });
+
+  const filteredReactions = reactions.filter((reaction) => Boolean(reaction.liked));
+
+  const likedUsers = filteredReactions
+    .filter((reaction) => reaction.likeType === "like")
+    .map((reaction) => ({
+      reactionId: reaction._id,
+      reactedAt: reaction.createdAt,
+      user: reaction.liked,
+    }));
+
+  const dislikedUsers = filteredReactions
+    .filter((reaction) => reaction.likeType === "dislike")
+    .map((reaction) => ({
+      reactionId: reaction._id,
+      reactedAt: reaction.createdAt,
+      user: reaction.liked,
+    }));
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Reaction list retrieved successfully",
+    data: {
+      filters: {
+        targetRole: targetRole || "all",
+      },
+      counts: {
+        likes: likedUsers.length,
+        dislikes: dislikedUsers.length,
+      },
+      likes: likedUsers,
+      dislikes: dislikedUsers,
+    },
+  });
+});
+
+// @desc    Get likes and dislikes received on my creative profile
+// @route   GET /api/social/my-received-reactions
+// @access  Private (Creative)
+export const getMyReceivedReactions = catchAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const likerRole = parseReactionRole(req.query.likerRole);
+
+  if (req.user.role !== "creative") {
+    return next(
+      new AppError(
+        httpStatus.FORBIDDEN,
+        "Only creatives can view received reactions",
+      ),
+    );
+  }
+
+  const reactions = await Like.find({
+    liked: userId,
+    targetType: "user",
+    isDeleted: false,
+  })
+    .populate({
+      path: "liker",
+      select: "name email role profileImage",
+      match: {
+        isDeleted: false,
+        ...(likerRole ? { role: likerRole } : {}),
+      },
+    })
+    .sort({ createdAt: -1 });
+
+  const filteredReactions = reactions.filter((reaction) => Boolean(reaction.liker));
+
+  const likes = filteredReactions
+    .filter((reaction) => reaction.likeType === "like")
+    .map((reaction) => ({
+      reactionId: reaction._id,
+      reactedAt: reaction.createdAt,
+      user: reaction.liker,
+    }));
+
+  const dislikes = filteredReactions
+    .filter((reaction) => reaction.likeType === "dislike")
+    .map((reaction) => ({
+      reactionId: reaction._id,
+      reactedAt: reaction.createdAt,
+      user: reaction.liker,
+    }));
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Received reactions retrieved successfully",
+    data: {
+      filters: {
+        likerRole: likerRole || "all",
+      },
+      counts: {
+        likes: likes.length,
+        dislikes: dislikes.length,
+      },
+      likes,
+      dislikes,
     },
   });
 });
