@@ -8,8 +8,7 @@ import AppError from "../errors/AppError.js";
 import sendResponse from "../utils/sendResponse.js";
 import catchAsync from "../utils/catchAsync.js";
 
-// ============ LIKE/DISLIKE FUNCTIONALITY ============
-const VALID_REACTION_ROLES = ["admin", "client", "creative"];
+const VALID_REACTION_ROLES = ["client", "creative"];
 
 const parseReactionRole = (roleValue) => {
   if (!roleValue) return null;
@@ -18,74 +17,133 @@ const parseReactionRole = (roleValue) => {
   if (!VALID_REACTION_ROLES.includes(normalizedRole)) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      "Invalid role filter. Allowed: admin, client, creative",
+      "Invalid role filter. Allowed: client, creative",
     );
   }
 
   return normalizedRole;
 };
 
-// @desc    Toggle like/dislike
-// @route   POST /api/social/like
-// @access  Private
-export const toggleLike = catchAsync(async (req, res, next) => {
-  const userId = req.user._id;
-  const { targetUserId, targetType = "user", likeType = "like" } = req.body;
-
-  if (!["like", "dislike"].includes(likeType)) {
-    return next(new AppError(httpStatus.BAD_REQUEST, "Invalid like type"));
+const validateReactionTarget = async (targetUserId, targetType, next) => {
+  if (!targetUserId) {
+    return next(
+      new AppError(httpStatus.BAD_REQUEST, "targetUserId is required"),
+    );
   }
 
-  // Check if target user exists
+  if (targetType !== "user") {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Invalid target type"));
+  }
+
   const targetUser = await User.findById(targetUserId);
-  if (!targetUser) {
+  if (!targetUser || targetUser.isDeleted) {
     return next(new AppError(httpStatus.NOT_FOUND, "Target user not found"));
   }
 
-  // Find existing like
-  const existingLike = await Like.findOne({
+  return targetUser;
+};
+
+const createReaction = async (req, res, next, likeType) => {
+  const userId = req.user._id;
+  const { targetUserId, targetType = "user" } = req.body;
+
+  const targetUser = await validateReactionTarget(
+    targetUserId,
+    targetType,
+    next,
+  );
+  if (!targetUser) return;
+
+  const existingReaction = await Like.findOne({
     liker: userId,
     liked: targetUserId,
     targetType,
+    likeType,
+    isDeleted: false,
   });
 
-  if (existingLike) {
-    if (existingLike.likeType === likeType) {
-      // Remove like if same type
-      await existingLike.deleteOne();
-      return sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: `${likeType} removed`,
-        data: { action: "removed" },
-      });
-    } else {
-      // Toggle between like and dislike
-      existingLike.likeType = likeType;
-      await existingLike.save();
-      return sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: `Changed to ${likeType}`,
-        data: { action: "toggled", likeType },
-      });
-    }
+  if (existingReaction) {
+    return sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: `Already ${likeType}d`,
+      data: existingReaction,
+    });
   }
 
-  // Create new like
-  await Like.create({
+  const reaction = await Like.create({
     liker: userId,
     liked: targetUserId,
     likeType,
     targetType,
   });
 
-  sendResponse(res, {
+  return sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: `${likeType}d successfully`,
-    data: { action: "created", likeType },
+    message: `${likeType === "like" ? "Like" : "Dislike"} added successfully`,
+    data: reaction,
   });
+};
+
+const removeReaction = async (req, res, next, likeType) => {
+  const userId = req.user._id;
+  const { targetUserId } = req.params;
+  const { targetType = "user" } = req.query;
+
+  const reaction = await Like.findOne({
+    liker: userId,
+    liked: targetUserId,
+    targetType,
+    likeType,
+    isDeleted: false,
+  });
+
+  if (!reaction) {
+    return next(
+      new AppError(
+        httpStatus.NOT_FOUND,
+        `${likeType === "like" ? "Like" : "Dislike"} not found`,
+      ),
+    );
+  }
+
+  await reaction.deleteOne();
+
+  return sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: `${likeType === "like" ? "Like" : "Dislike"} removed successfully`,
+    data: null,
+  });
+};
+
+// @desc    Add like
+// @route   POST /api/social/like
+// @access  Private
+export const addLike = catchAsync(async (req, res, next) => {
+  return createReaction(req, res, next, "like");
+});
+
+// @desc    Remove like
+// @route   DELETE /api/social/like/:targetUserId
+// @access  Private
+export const removeLike = catchAsync(async (req, res, next) => {
+  return removeReaction(req, res, next, "like");
+});
+
+// @desc    Add dislike
+// @route   POST /api/social/dislike
+// @access  Private
+export const addDislike = catchAsync(async (req, res, next) => {
+  return createReaction(req, res, next, "dislike");
+});
+
+// @desc    Remove dislike
+// @route   DELETE /api/social/dislike/:targetUserId
+// @access  Private
+export const removeDislike = catchAsync(async (req, res, next) => {
+  return removeReaction(req, res, next, "dislike");
 });
 
 // @desc    Get user's likes
@@ -193,7 +251,9 @@ export const getMyCreativeReactions = catchAsync(async (req, res, next) => {
     })
     .sort({ createdAt: -1 });
 
-  const filteredReactions = reactions.filter((reaction) => Boolean(reaction.liked));
+  const filteredReactions = reactions.filter((reaction) =>
+    Boolean(reaction.liked),
+  );
 
   const likedUsers = filteredReactions
     .filter((reaction) => reaction.likeType === "like")
@@ -260,7 +320,9 @@ export const getMyReceivedReactions = catchAsync(async (req, res, next) => {
     })
     .sort({ createdAt: -1 });
 
-  const filteredReactions = reactions.filter((reaction) => Boolean(reaction.liker));
+  const filteredReactions = reactions.filter((reaction) =>
+    Boolean(reaction.liker),
+  );
 
   const likes = filteredReactions
     .filter((reaction) => reaction.likeType === "like")
@@ -325,6 +387,45 @@ export const getUserLikers = catchAsync(async (req, res, next) => {
     message: "Likers retrieved successfully",
     data: {
       likers: likes.map((like) => like.liker),
+      pagination: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(total / Number(limit)),
+        total,
+        limit: Number(limit),
+      },
+    },
+  });
+});
+
+// @desc    Get users who disliked a user
+// @route   GET /api/social/users/:userId/dislikers
+// @access  Private
+export const getUserDislikers = catchAsync(async (req, res, next) => {
+  const { userId } = req.params;
+  const { page = 1, limit = 20 } = req.query;
+
+  const query = {
+    liked: userId,
+    likeType: "dislike",
+    isDeleted: false,
+  };
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const dislikes = await Like.find(query)
+    .populate("liker", "name email profileImage")
+    .skip(skip)
+    .limit(Number(limit))
+    .sort({ createdAt: -1 });
+
+  const total = await Like.countDocuments(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Dislikers retrieved successfully",
+    data: {
+      dislikers: dislikes.map((dislike) => dislike.liker),
       pagination: {
         currentPage: Number(page),
         totalPages: Math.ceil(total / Number(limit)),

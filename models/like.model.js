@@ -38,8 +38,11 @@ const likeSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// Compound index to prevent duplicate likes
-likeSchema.index({ liker: 1, liked: 1, targetType: 1 }, { unique: true });
+// Compound index to prevent duplicate reactions of the same type
+likeSchema.index(
+  { liker: 1, liked: 1, targetType: 1, likeType: 1 },
+  { unique: true },
+);
 likeSchema.index({ liked: 1, likeType: 1 });
 likeSchema.index({ createdAt: -1 });
 

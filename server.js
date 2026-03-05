@@ -87,6 +87,23 @@ server.listen(PORT, async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("MongoDB connected");
+
+    // Ensure likes/dislikes can be stored as separate documents.
+    try {
+      const likesCollection = mongoose.connection.collection("likes");
+      await likesCollection
+        .dropIndex("liker_1_liked_1_targetType_1")
+        .catch((error) => {
+          if (error.codeName !== "IndexNotFound") throw error;
+        });
+
+      await likesCollection.createIndex(
+        { liker: 1, liked: 1, targetType: 1, likeType: 1 },
+        { unique: true, name: "liker_1_liked_1_targetType_1_likeType_1" },
+      );
+    } catch (indexError) {
+      console.error("Like index migration warning:", indexError.message);
+    }
   } catch (err) {
     console.error("MongoDB connection error:", err);
     process.exit(1);

@@ -1,11 +1,15 @@
 import express from "express";
 import {
-  toggleLike,
+  addLike,
+  removeLike,
+  addDislike,
+  removeDislike,
   getMyLikes,
   getMyDislikes,
   getMyCreativeReactions,
   getMyReceivedReactions,
   getUserLikers,
+  getUserDislikers,
   blockUser,
   unblockUser,
   getBlockedUsers,
@@ -21,12 +25,16 @@ const router = express.Router();
 router.use(protect);
 
 // Like/Dislike routes
-router.post("/like", toggleLike);
+router.post("/like", addLike);
+router.delete("/like/:targetUserId", removeLike);
+router.post("/dislike", addDislike);
+router.delete("/dislike/:targetUserId", removeDislike);
 router.get("/my-likes", getMyLikes);
 router.get("/my-dislikes", getMyDislikes);
 router.get("/my-creative-reactions", getMyCreativeReactions);
 router.get("/my-received-reactions", getMyReceivedReactions);
 router.get("/users/:userId/likers", getUserLikers);
+router.get("/users/:userId/dislikers", getUserDislikers);
 
 // Block routes
 router.post("/block", blockUser);

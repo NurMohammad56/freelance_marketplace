@@ -2546,43 +2546,6 @@
       "name": "Social",
       "item": [
         {
-          "name": "Toggle Like (Auth)",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"targetId\": \"TARGET_ID\",\n  \"targetType\": \"gig\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/social/like",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "social",
-                "like"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Get My Likes (Auth)",
           "request": {
             "auth": {
@@ -2884,6 +2847,170 @@
               "path": [
                 "social",
                 "my-received-reactions"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Like (Auth)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/social/like",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "like"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetUserId\": \"TARGET_USER_ID\",\n  \"targetType\": \"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Remove Like (Auth)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/social/like/:targetUserId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "like",
+                ":targetUserId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Dislike (Auth)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/social/dislike",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "dislike"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetUserId\": \"TARGET_USER_ID\",\n  \"targetType\": \"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Remove Dislike (Auth)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/social/dislike/:targetUserId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "dislike",
+                ":targetUserId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Dislikers (Auth)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/social/users/:userId/dislikers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "social",
+                "users",
+                ":userId",
+                "dislikers"
               ]
             },
             "auth": {
