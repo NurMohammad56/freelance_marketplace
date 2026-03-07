@@ -534,6 +534,56 @@ export const getMyTickets = catchAsync(async (req, res, next) => {
   });
 });
 
+// @desc    Get all support tickets (Admin)
+// @route   GET /api/support/tickets
+// @access  Private (Admin)
+export const getAllTickets = catchAsync(async (req, res, next) => {
+  const { status, category, priority, search, page = 1, limit = 20 } =
+    req.query;
+
+  const query = {
+    isDeleted: false,
+  };
+
+  if (status) query.status = status;
+  if (category) query.category = category;
+  if (priority) query.priority = priority;
+
+  if (search) {
+    query.$or = [
+      { ticketId: { $regex: search, $options: "i" } },
+      { subject: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+      { category: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const tickets = await SupportTicket.find(query)
+    .populate("user", "name email profileImage")
+    .skip(skip)
+    .limit(Number(limit))
+    .sort({ createdAt: -1 });
+
+  const total = await SupportTicket.countDocuments(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Support tickets retrieved successfully",
+    data: {
+      tickets,
+      pagination: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(total / Number(limit)),
+        total,
+        limit: Number(limit),
+      },
+    },
+  });
+});
+
 // @desc    Get ticket by ID
 // @route   GET /api/support/tickets/:ticketId
 // @access  Private

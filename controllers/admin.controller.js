@@ -6,10 +6,21 @@ import { Verification } from "../models/verification.model.js";
 import { Report } from "../models/report.model.js";
 import { Gig } from "../models/gig.model.js";
 import { JobPost } from "../models/jobPost.model.js";
+import { Subscription } from "../models/subscription.model.js";
 import AppError from "../errors/AppError.js";
 import sendResponse from "../utils/sendResponse.js";
 import catchAsync from "../utils/catchAsync.js";
 import { createNotification } from "../utils/notification.js";
+
+const parseBooleanValue = (value, fallback = true) => {
+  if (value === undefined || value === null) return fallback;
+  if (typeof value === "boolean") return value;
+
+  const normalized = String(value).trim().toLowerCase();
+  if (["true", "1", "yes"].includes(normalized)) return true;
+  if (["false", "0", "no"].includes(normalized)) return false;
+  return fallback;
+};
 
 // @desc    Get dashboard overview
 // @route   GET /api/admin/dashboard
@@ -517,6 +528,236 @@ export const reviewReport = catchAsync(async (req, res, next) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Report reviewed successfully",
+    data: null,
+  });
+});
+
+// ============ SUBSCRIPTION MANAGEMENT ============
+
+// @desc    Create subscription
+// @route   POST /api/admin/subscriptions
+// @access  Private (Admin)
+export const createSubscription = catchAsync(async (req, res, next) => {
+  const { name, price, billingCycle, title, includes, isActive = true } =
+    req.body;
+
+  if (!name || price === undefined || !billingCycle) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "name, price and billingCycle are required",
+      ),
+    );
+  }
+
+  const normalizedCycle = String(billingCycle).trim().toLowerCase();
+  if (!["monthly", "yearly"].includes(normalizedCycle)) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "billingCycle must be monthly or yearly",
+      ),
+    );
+  }
+
+  const parsedPrice = Number(price);
+  if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "Invalid price"));
+  }
+
+  const existing = await Subscription.findOne({
+    name: String(name).trim(),
+    billingCycle: normalizedCycle,
+    isDeleted: false,
+  });
+
+  if (existing) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "Subscription already exists for this billing cycle",
+      ),
+    );
+  }
+
+  const subscription = await Subscription.create({
+    name: String(name).trim(),
+    price: parsedPrice,
+    billingCycle: normalizedCycle,
+    title: title ? String(title).trim() : "",
+    includes: includes ? String(includes).trim() : "",
+    isActive: parseBooleanValue(isActive, true),
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Subscription created successfully",
+    data: subscription,
+  });
+});
+
+// @desc    Get all subscriptions
+// @route   GET /api/admin/subscriptions
+// @access  Private (Admin)
+export const getAllSubscriptions = catchAsync(async (req, res, next) => {
+  const {
+    search,
+    billingCycle,
+    isActive,
+    page = 1,
+    limit = 20,
+  } = req.query;
+
+  const query = { isDeleted: false };
+
+  if (billingCycle) {
+    const normalizedCycle = String(billingCycle).trim().toLowerCase();
+    if (!["monthly", "yearly"].includes(normalizedCycle)) {
+      return next(
+        new AppError(
+          httpStatus.BAD_REQUEST,
+          "billingCycle must be monthly or yearly",
+        ),
+      );
+    }
+    query.billingCycle = normalizedCycle;
+  }
+
+  if (isActive !== undefined) {
+    query.isActive = String(isActive).toLowerCase() === "true";
+  }
+
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { title: { $regex: search, $options: "i" } },
+      { includes: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const subscriptions = await Subscription.find(query)
+    .skip(skip)
+    .limit(Number(limit))
+    .sort({ createdAt: -1 });
+
+  const total = await Subscription.countDocuments(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Subscriptions retrieved successfully",
+    data: {
+      subscriptions,
+      pagination: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(total / Number(limit)),
+        total,
+        limit: Number(limit),
+      },
+    },
+  });
+});
+
+// @desc    Update subscription
+// @route   PATCH /api/admin/subscriptions/:subscriptionId
+// @access  Private (Admin)
+export const updateSubscription = catchAsync(async (req, res, next) => {
+  const { subscriptionId } = req.params;
+  const { name, price, billingCycle, title, includes, isActive } = req.body;
+
+  const subscription = await Subscription.findById(subscriptionId);
+  if (!subscription || subscription.isDeleted) {
+    return next(new AppError(httpStatus.NOT_FOUND, "Subscription not found"));
+  }
+
+  if (name !== undefined) {
+    const normalizedName = String(name).trim();
+    if (!normalizedName) {
+      return next(new AppError(httpStatus.BAD_REQUEST, "Invalid name"));
+    }
+    subscription.name = normalizedName;
+  }
+
+  if (price !== undefined) {
+    const parsedPrice = Number(price);
+    if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+      return next(new AppError(httpStatus.BAD_REQUEST, "Invalid price"));
+    }
+    subscription.price = parsedPrice;
+  }
+
+  if (billingCycle !== undefined) {
+    const normalizedCycle = String(billingCycle).trim().toLowerCase();
+    if (!["monthly", "yearly"].includes(normalizedCycle)) {
+      return next(
+        new AppError(
+          httpStatus.BAD_REQUEST,
+          "billingCycle must be monthly or yearly",
+        ),
+      );
+    }
+    subscription.billingCycle = normalizedCycle;
+  }
+
+  if (title !== undefined) {
+    subscription.title = String(title).trim();
+  }
+
+  if (includes !== undefined) {
+    subscription.includes = String(includes).trim();
+  }
+
+  if (isActive !== undefined) {
+    subscription.isActive = parseBooleanValue(isActive, subscription.isActive);
+  }
+
+  const duplicate = await Subscription.findOne({
+    _id: { $ne: subscription._id },
+    name: subscription.name,
+    billingCycle: subscription.billingCycle,
+    isDeleted: false,
+  });
+
+  if (duplicate) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "Another subscription with the same name and billing cycle already exists",
+      ),
+    );
+  }
+
+  await subscription.save();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Subscription updated successfully",
+    data: subscription,
+  });
+});
+
+// @desc    Delete subscription
+// @route   DELETE /api/admin/subscriptions/:subscriptionId
+// @access  Private (Admin)
+export const deleteSubscription = catchAsync(async (req, res, next) => {
+  const { subscriptionId } = req.params;
+
+  const subscription = await Subscription.findById(subscriptionId);
+  if (!subscription || subscription.isDeleted) {
+    return next(new AppError(httpStatus.NOT_FOUND, "Subscription not found"));
+  }
+
+  subscription.isDeleted = true;
+  await subscription.save();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Subscription deleted successfully",
     data: null,
   });
 });

@@ -10,6 +10,10 @@ import {
   reviewVerification,
   getAllReports,
   reviewReport,
+  createSubscription,
+  getAllSubscriptions,
+  updateSubscription,
+  deleteSubscription,
 } from "../controllers/admin.controller.js";
 import { protect, restrictTo } from "../middleware/auth.middleware.js";
 
@@ -38,5 +42,11 @@ router.patch("/verifications/:verificationId", reviewVerification);
 // Reports Management
 router.get("/reports", getAllReports);
 router.patch("/reports/:reportId", reviewReport);
+
+// Subscription Management
+router.post("/subscriptions", createSubscription);
+router.get("/subscriptions", getAllSubscriptions);
+router.patch("/subscriptions/:subscriptionId", updateSubscription);
+router.delete("/subscriptions/:subscriptionId", deleteSubscription);
 
 export default router;

@@ -1,6 +1,10 @@
 import AppError from "../errors/AppError.js";
 import { Website } from "../models/website.model.js";
 import { uploadOnCloudinary } from "../utils/commonMethod.js";
+import {
+  deleteFromCloudinary,
+  deleteMultipleFromCloudinary,
+} from "../utils/cloudinary.js";
 import catchAsync from "../utils/catchAsync.js";
 import sendResponse from "../utils/sendResponse.js";
 
@@ -14,6 +18,63 @@ const saveSingleImage = async (file) => {
   if (!file) return null;
   const uploaded = await uploadOnCloudinary(file.buffer);
   return { public_id: uploaded.public_id, url: uploaded.secure_url };
+};
+
+const toBoolean = (value) => {
+  if (typeof value === "boolean") return value;
+  if (value === undefined || value === null) return false;
+
+  const normalized = String(value).trim().toLowerCase();
+  return ["true", "1", "yes"].includes(normalized);
+};
+
+const safeDeleteCloudinaryImage = async (publicId) => {
+  if (!publicId) return;
+  try {
+    await deleteFromCloudinary(publicId, "image");
+  } catch (error) {
+    // Keep request successful even if external deletion fails.
+    console.error("Cloudinary single image delete failed:", error?.message);
+  }
+};
+
+const safeDeleteCloudinaryImages = async (publicIds = []) => {
+  const filteredIds = publicIds.filter(Boolean);
+  if (!filteredIds.length) return;
+
+  try {
+    await deleteMultipleFromCloudinary(filteredIds, "image");
+  } catch (error) {
+    console.error("Cloudinary multiple image delete failed:", error?.message);
+  }
+};
+
+const parsePublicIds = (value) => {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value
+      .flatMap((item) =>
+        String(item)
+          .split(",")
+          .map((id) => id.trim()),
+      )
+      .filter(Boolean);
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      return parsed.map((id) => String(id).trim()).filter(Boolean);
+    }
+  } catch {
+    // ignore json parse failure and fallback to csv parsing
+  }
+
+  return String(value)
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
 };
 
 const saveMultipleImages = async (files = []) => {
@@ -76,12 +137,23 @@ export const updateHeroSection = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "Hero section not found"));
   }
 
-  const { title, bodyText } = req.body;
+  const { title, bodyText, removeImage } = req.body;
   const heroImage = await saveSingleImage(req.files?.image?.[0]);
 
   if (title) website.hero.title = title;
   if (bodyText) website.hero.bodyText = bodyText;
-  if (heroImage) website.hero.image = heroImage;
+
+  if (toBoolean(removeImage) && website.hero?.image?.public_id) {
+    await safeDeleteCloudinaryImage(website.hero.image.public_id);
+    website.hero.image = { public_id: "", url: "" };
+  }
+
+  if (heroImage) {
+    if (website.hero?.image?.public_id) {
+      await safeDeleteCloudinaryImage(website.hero.image.public_id);
+    }
+    website.hero.image = heroImage;
+  }
 
   await website.save();
 
@@ -138,12 +210,23 @@ export const updateAboutSection = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "About section not found"));
   }
 
-  const { title, bodyText } = req.body;
+  const { title, bodyText, removeImage } = req.body;
   const aboutImage = await saveSingleImage(req.files?.image?.[0]);
 
   if (title) website.about.title = title;
   if (bodyText) website.about.bodyText = bodyText;
-  if (aboutImage) website.about.image = aboutImage;
+
+  if (toBoolean(removeImage) && website.about?.image?.public_id) {
+    await safeDeleteCloudinaryImage(website.about.image.public_id);
+    website.about.image = { public_id: "", url: "" };
+  }
+
+  if (aboutImage) {
+    if (website.about?.image?.public_id) {
+      await safeDeleteCloudinaryImage(website.about.image.public_id);
+    }
+    website.about.image = aboutImage;
+  }
 
   await website.save();
 
@@ -203,14 +286,39 @@ export const updateCreativeSection = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "Creative section not found"));
   }
 
-  const { title, bodyText } = req.body;
+  const { title, bodyText, removeHeroImage, removeImagePublicIds } = req.body;
   const heroImage = await saveSingleImage(req.files?.heroImage?.[0]);
-  const images = await saveMultipleImages(req.files?.images);
+  const uploadedImages = await saveMultipleImages(req.files?.images);
+  const imageIdsToRemove = parsePublicIds(removeImagePublicIds);
 
   if (title) website.creative.title = title;
   if (bodyText) website.creative.bodyText = bodyText;
-  if (heroImage) website.creative.heroImage = heroImage;
-  if (images.length) website.creative.images = images;
+
+  if (toBoolean(removeHeroImage) && website.creative?.heroImage?.public_id) {
+    await safeDeleteCloudinaryImage(website.creative.heroImage.public_id);
+    website.creative.heroImage = { public_id: "", url: "" };
+  }
+
+  if (heroImage) {
+    if (website.creative?.heroImage?.public_id) {
+      await safeDeleteCloudinaryImage(website.creative.heroImage.public_id);
+    }
+    website.creative.heroImage = heroImage;
+  }
+
+  if (imageIdsToRemove.length) {
+    await safeDeleteCloudinaryImages(imageIdsToRemove);
+    website.creative.images = (website.creative.images || []).filter(
+      (image) => !imageIdsToRemove.includes(image.public_id),
+    );
+  }
+
+  if (uploadedImages.length) {
+    website.creative.images = [
+      ...(website.creative.images || []),
+      ...uploadedImages,
+    ];
+  }
 
   await website.save();
 
@@ -267,12 +375,23 @@ export const updateClientSection = catchAsync(async (req, res, next) => {
     return next(new AppError(404, "Client section not found"));
   }
 
-  const { title, bodyText } = req.body;
+  const { title, bodyText, removeImage } = req.body;
   const image = await saveSingleImage(req.files?.image?.[0]);
 
   if (title) website.client.title = title;
   if (bodyText) website.client.bodyText = bodyText;
-  if (image) website.client.image = image;
+
+  if (toBoolean(removeImage) && website.client?.image?.public_id) {
+    await safeDeleteCloudinaryImage(website.client.image.public_id);
+    website.client.image = { public_id: "", url: "" };
+  }
+
+  if (image) {
+    if (website.client?.image?.public_id) {
+      await safeDeleteCloudinaryImage(website.client.image.public_id);
+    }
+    website.client.image = image;
+  }
 
   await website.save();
 

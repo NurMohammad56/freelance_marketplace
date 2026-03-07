@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createSupportTicket,
+  getAllTickets,
   getMyTickets,
   getTicketById,
   updateTicketStatus,
@@ -21,6 +22,7 @@ router.get("/tickets/:ticketId", getTicketById);
 router.patch("/tickets/:ticketId/rate", rateTicket);
 
 // Admin routes
+router.get("/tickets", restrictTo("admin"), getAllTickets);
 router.patch(
   "/tickets/:ticketId/status",
   restrictTo("admin"),
