@@ -17,6 +17,10 @@ router.post("/message", protect, messageController.sendMessage);
 router.get("/message/:chatId", protect, messageController.getMessagesByChatId);
 router.put("/message/:messageId", protect, messageController.updateMessage);
 router.delete("/message/:messageId", protect, messageController.deleteMessage);
-// router.put("/message/:messageId/read", protect, messageController.markAsRead);
+router.put(
+  "/message/:messageId/read",
+  protect,
+  messageController.markMessageAsRead,
+);
 
 export default router;

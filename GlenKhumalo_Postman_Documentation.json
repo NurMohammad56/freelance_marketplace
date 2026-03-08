@@ -4483,14 +4483,30 @@
       "name": "Chat",
       "item": [
         {
-          "name": "Create Chat",
+          "name": "Create Chat (Auth)",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/chat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "chat"
+              ]
+            },
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -4498,74 +4514,94 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"participants\": [\"65f1a2b3c4d5e6f789012345\"],\n  \"chatType\": \"direct\"\n}"
+              "raw": "{\n  \"participants\": [\n    \"USER_ID\"\n  ],\n  \"chatType\": \"direct\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get User Chats (Auth)",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/chat",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "chat"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get User Chats",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/chat",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "chat"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Chat By ID",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/chat/{{chatId}}",
+              "raw": "{{baseUrl}}/chat/chat",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "chat",
-                "{{chatId}}"
+                "chat"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
-          "name": "Update Chat",
+          "name": "Get Chat By ID (Auth)",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/chat/:chatId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "chat",
+                ":chatId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Chat (Auth)",
           "request": {
             "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/chat/:chatId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "chat",
+                ":chatId"
+              ]
+            },
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -4573,44 +4609,42 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"isBlocked\": true\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/chat/{{chatId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "chat",
-                "{{chatId}}"
-              ]
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
-          },
-          "response": []
+          }
         },
         {
-          "name": "Block Chat",
+          "name": "Block Chat (Auth)",
           "request": {
             "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "url": {
-              "raw": "{{baseUrl}}/chat/{{chatId}}/block",
+              "raw": "{{baseUrl}}/chat/chat/:chatId/block",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "chat",
-                "{{chatId}}",
+                "chat",
+                ":chatId",
                 "block"
               ]
             }
-          },
-          "response": []
+          }
         }
       ]
     },
@@ -4618,107 +4652,30 @@
       "name": "Message",
       "item": [
         {
-          "name": "Send Message (Text)",
+          "name": "Send Message (Auth)",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"chatId\": \"{{chatId}}\",\n  \"content\": \"Hello, this is test message\",\n  \"messageType\": \"text\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/message",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "message"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Send Message (Media)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"chatId\": \"{{chatId}}\",\n  \"messageType\": \"image\",\n  \"media\": [\n    {\n      \"public_id\": \"chat/image1\",\n      \"url\": \"https://example.com/image.jpg\",\n      \"fileType\": \"image\",\n      \"fileName\": \"image.jpg\"\n    }\n  ]\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/message",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "message"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Messages by Chat ID",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/message/{{chatId}}?page=1&limit=20",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "message",
-                "{{chatId}}"
-              ],
-              "query": [
+            "auth": {
+              "type": "bearer",
+              "bearer": [
                 {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "limit",
-                  "value": "20"
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
                 }
               ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Message",
-          "request": {
-            "method": "PUT",
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/message",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "message"
+              ]
+            },
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -4726,67 +4683,138 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"Updated message content\"\n}"
+              "raw": "{\n  \"chatId\": \"CHAT_ID\",\n  \"content\": \"Hello\",\n  \"messageType\": \"text\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Messages By Chat (Auth)",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/message/{{messageId}}",
+              "raw": "{{baseUrl}}/chat/message/:chatId?page=1&limit=20",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "chat",
                 "message",
-                "{{messageId}}"
+                ":chatId"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
-          "name": "Delete Message",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/message/{{messageId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "message",
-                "{{messageId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Mark Message as Read",
+          "name": "Update Message (Auth)",
           "request": {
             "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "url": {
-              "raw": "{{baseUrl}}/message/{{messageId}}/read",
+              "raw": "{{baseUrl}}/chat/message/:messageId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "chat",
                 "message",
-                "{{messageId}}",
+                ":messageId"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated content\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Message (Auth)",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/message/:messageId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "message",
+                ":messageId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Message As Read (Auth)",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/message/:messageId/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "message",
+                ":messageId",
                 "read"
               ]
             }
-          },
-          "response": []
+          }
         }
       ]
     },

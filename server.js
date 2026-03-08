@@ -10,6 +10,7 @@ import { Server } from "socket.io";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import notFound from "./middleware/notFound.js";
 import { handleMulterError } from "./middleware/multer.middleware.js";
+import { setIO } from "./utils/socket.js";
 
 dotenv.config();
 
@@ -109,3 +110,4 @@ server.listen(PORT, async () => {
     process.exit(1);
   }
 });
+setIO(io);

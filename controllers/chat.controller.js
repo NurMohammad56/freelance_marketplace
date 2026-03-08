@@ -4,6 +4,7 @@ import catchAsync from "../utils/catchAsync.js";
 import sendResponse from "../utils/sendResponse.js";
 import AppError from "../errors/AppError.js";
 import { Chat } from "../models/chat.model.js";
+import { getIO } from "../utils/socket.js";
 
 /**
  * CREATE CHAT
@@ -12,9 +13,22 @@ export const createChat = catchAsync(async (req, res, next) => {
   const { participants = [], chatType = "direct", supportTicket } = req.body;
   const userId = req.user._id;
 
+  if (!Array.isArray(participants)) {
+    return next(new AppError(httpStatus.BAD_REQUEST, "participants must be an array"));
+  }
+
   const uniqueParticipants = [
     ...new Set([...participants.map(String), userId.toString()]),
   ];
+
+  if (chatType === "direct" && uniqueParticipants.length < 2) {
+    return next(
+      new AppError(
+        httpStatus.BAD_REQUEST,
+        "Direct chat requires at least one other participant",
+      ),
+    );
+  }
 
   // check existing direct chat
   if (chatType === "direct") {
@@ -47,6 +61,13 @@ export const createChat = catchAsync(async (req, res, next) => {
     supportTicket,
     unreadCount,
   });
+
+  const io = getIO();
+  if (io) {
+    uniqueParticipants.forEach((participantId) => {
+      io.to(`user_${participantId}`).emit("chat:new", chat);
+    });
+  }
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -110,6 +131,15 @@ export const getChatById = catchAsync(async (req, res, next) => {
     return next(new AppError(httpStatus.NOT_FOUND, "Chat not found"));
   }
 
+  const isParticipant = chat.participants.some(
+    (participant) => participant._id.toString() === req.user._id.toString(),
+  );
+  if (!isParticipant) {
+    return next(
+      new AppError(httpStatus.FORBIDDEN, "You are not allowed to view this chat"),
+    );
+  }
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -124,12 +154,40 @@ export const getChatById = catchAsync(async (req, res, next) => {
 export const updateChat = catchAsync(async (req, res, next) => {
   const { chatId } = req.params;
 
-  const chat = await Chat.findByIdAndUpdate(chatId, req.body, {
-    new: true,
+  const currentChat = await Chat.findById(chatId);
+  if (!currentChat || currentChat.isDeleted) {
+    return next(new AppError(httpStatus.NOT_FOUND, "Chat not found"));
+  }
+
+  const isParticipant = currentChat.participants.some(
+    (participant) => participant.toString() === req.user._id.toString(),
+  );
+  if (!isParticipant) {
+    return next(
+      new AppError(
+        httpStatus.FORBIDDEN,
+        "You are not allowed to update this chat",
+      ),
+    );
+  }
+
+  const updatableFields = ["lastMessage", "lastMessageAt", "unreadCount"];
+  const payload = {};
+  updatableFields.forEach((field) => {
+    if (req.body[field] !== undefined) payload[field] = req.body[field];
   });
+
+  const chat = await Chat.findByIdAndUpdate(chatId, payload, { new: true });
 
   if (!chat) {
     return next(new AppError(httpStatus.NOT_FOUND, "Chat not found"));
+  }
+
+  const io = getIO();
+  if (io) {
+    chat.participants.forEach((participant) => {
+      io.to(`user_${participant.toString()}`).emit("chat:updated", chat);
+    });
   }
 
   sendResponse(res, {
@@ -146,6 +204,20 @@ export const updateChat = catchAsync(async (req, res, next) => {
 export const blockChat = catchAsync(async (req, res, next) => {
   const { chatId } = req.params;
 
+  const currentChat = await Chat.findById(chatId);
+  if (!currentChat || currentChat.isDeleted) {
+    return next(new AppError(httpStatus.NOT_FOUND, "Chat not found"));
+  }
+
+  const isParticipant = currentChat.participants.some(
+    (participant) => participant.toString() === req.user._id.toString(),
+  );
+  if (!isParticipant) {
+    return next(
+      new AppError(httpStatus.FORBIDDEN, "You are not allowed to block this chat"),
+    );
+  }
+
   const chat = await Chat.findByIdAndUpdate(
     chatId,
     {
@@ -157,6 +229,16 @@ export const blockChat = catchAsync(async (req, res, next) => {
 
   if (!chat) {
     return next(new AppError(httpStatus.NOT_FOUND, "Chat not found"));
+  }
+
+  const io = getIO();
+  if (io) {
+    chat.participants.forEach((participant) => {
+      io.to(`user_${participant.toString()}`).emit("chat:blocked", {
+        chatId: chat._id,
+        blockedBy: req.user._id,
+      });
+    });
   }
 
   sendResponse(res, {
