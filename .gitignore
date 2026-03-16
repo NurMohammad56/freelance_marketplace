@@ -49,3 +49,4 @@ uploads/
 test/
 *.test.js
 *.spec.js
+config.bat
