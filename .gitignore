@@ -1,13 +1,10 @@
 # Dependencies
 node_modules/
-package-lock.json
-yarn.lock
 
 # Environment variables
-# .env
-# .env.local
-# .env.development
-# .env.production
+.env
+.env.*
+!.env.example
 
 # Logs
 logs/
@@ -16,37 +13,48 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory
-coverage/
-.nyc_output/
-
 # Build files
 dist/
 build/
+out/
 
-# IDE
+# Coverage
+coverage/
+
+# Cache
+.cache/
+.parcel-cache/
+.npm/
+.eslintcache
+
+# IDEs and Editors
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
+
+# OS files
 .DS_Store
+Thumbs.db
 
 # Temporary files
 tmp/
 temp/
 
-# Upload directories (if storing locally)
+# Uploads (optional)
 uploads/
+public/uploads/
 
-# Test files
-test/
-*.test.js
-*.spec.js
-config.bat
+# TypeScript
+*.tsbuildinfo
+
+# PM2
+.pm2/
+
+# Docker
+docker-compose.override.yml
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
